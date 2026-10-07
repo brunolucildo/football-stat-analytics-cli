@@ -1,6 +1,7 @@
 import { generateWithCritique } from './utils/generateWithCritique.ts';
 import { withRetry } from './utils/withRetry.ts';
 import { PERSONAS } from './pesonas.ts';
+import { buildSystemPrompt } from './prompts.ts';
 
 const offer = `Olá, equipe do Palmeiras,
                     Gostaríamos de manifestar nosso interesse na contratação do atleta Gabriel Martins, atualmente vinculado ao clube.
@@ -31,7 +32,7 @@ async function chatWithPersona(
     question: string
 ){
     await withRetry(async () => {
-        const systemPrompt = PERSONAS[persona];
+        const systemPrompt = buildSystemPrompt(persona);
         const response = await generateWithCritique(systemPrompt,question);
 
         console.log(`\n\n[${persona.toUpperCase()}] resposta:\n`, response)
