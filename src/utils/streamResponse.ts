@@ -1,10 +1,10 @@
 import { openai } from '../clients/openai.ts'
 import type { History } from "../types.ts"
-import { PERSONAS } from '../pesonas.ts';
+import { buildSystemPrompt } from '../prompts.ts'
 
 export async function streamResponse( 
     history: History[], 
-    system: string = PERSONAS.analistaEsportivo
+    system: string = buildSystemPrompt("analistaEsportivo")
 ){
     let fullResponse = "";
 
