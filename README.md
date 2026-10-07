@@ -41,4 +41,6 @@ node --loader ts-node/esm src/index.ts
 
 # Executar chatbot interativo (com system prompt via argumento)
 node --loader ts-node/esm src/chatbot.ts "Você é um especialista em futebol"
-Requisitos: Node.js 18+, OPENAI_API_KEY válida em .env.local (ou .env)
+
+# Requisitos: 
+Node.js 18+, OPENAI_API_KEY válida em .env.local (ou .env)
