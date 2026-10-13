@@ -1,10 +1,11 @@
 
 import { openai } from "../clients/openai.ts"
 import { withRetry } from "./withRetry.ts";
+import { ContextWindow } from "../contextWindow.ts";
 
 export async function generateWithCritique(
     system: string,
-    prompt: string,    
+    contextWindow: ContextWindow,    
 ): Promise<string> {
     // Step 1: Generate initial response
     const draft = await withRetry(async () => {
@@ -12,7 +13,7 @@ export async function generateWithCritique(
             model: "gpt-4o-mini",
             messages: [
                 {role: "system", content: system},
-                {role: "user", content: prompt},
+                ...contextWindow.getMessages(),
             ],
         });
         return response.choices[0].message?.content ?? "";
