@@ -1,32 +1,26 @@
+import * as crypto from 'node:crypto';
 import { generateWithCritique } from './utils/generateWithCritique.ts';
 import { PERSONAS } from './utils/pesonas.ts';
+import { OFFER } from './utils/offers.ts';
 import { ContextWindow } from './contextWindow.ts';
+import { summarizeHistory } from './utils/summarizeHistory.ts';
+import { MessageRepository } from './messageRepository.ts';
 
+const windowId = process.argv[2] || crypto.randomUUID();
 const contextWindow = new ContextWindow();
+const messageRepository = new MessageRepository();
 
-const offer = `Olá, equipe do Palmeiras,
-                    Gostaríamos de manifestar nosso interesse na contratação do atleta Gabriel Martins, atualmente vinculado ao clube.
-                    Após analisarmos seu desempenho recente e seu perfil, entendemos que o jogador possui características alinhadas ao nosso projeto esportivo. Gostaríamos de saber sobre a disponibilidade do atleta para uma possível transferência e quais seriam as condições iniciais para avançarmos nas negociações.
-                    Oferecemos de início o valor de 1.000.000,00 em Euros.
-                    Ficamos à disposição para conversar sobre valores, formato da operação e demais condições.
-                    Atenciosamente,
-                    Departamento de Futebol
-                    Real Madrid`
+console.log(`\n\n -------------- \nIniciando sessão de análise de propostas de transferência de atletas. Identificador da sessão: ${windowId}\n ---------------------------`);
 
-const offer2 = `Olá, equipe do Palmeiras,
-                    Qual foi nossa primeira proposta mesmo?
-                    Atenciosamente,
-                    Departamento de Futebol
-                    Real Madrid`
+const initialMessages = messageRepository.load(windowId);
+if (initialMessages.length > 0) {
+    console.log(`\n\n -------------- \nRestaurando histórico de mensagens da sessão anterior. Identificador da sessão: ${windowId}\n ---------------------------`);
+    console.log(`\n\n -------------- \n${initialMessages.length} mensagens restauradas.\n ---------------------------`);
+    initialMessages.forEach(message => {
+        contextWindow.restore(message.role, message.content);
+    });
+ }
 
- const offer3 = `Olá, equipe do Palmeiras,
-                    Dando continuidade às conversas sobre a possível contratação de Gabriel Martins, gostaríamos de apresentar uma nova estrutura de proposta que considere tanto os interesses do Palmeiras quanto o potencial esportivo do atleta.
-                    Nossa oferta contempla € 1.200.000,00 (um milhão e duzentos mil euros) como valor fixo, acrescidos de até € 500.000,00 em bônus variáveis, condicionados ao cumprimento de metas esportivas, como número de partidas disputadas, participações em gols e conquistas coletivas.
-                    Acreditamos que esse modelo permite valorizar o desempenho futuro do jogador e oferece ao Palmeiras a possibilidade de obter um retorno financeiro adicional caso as metas estabelecidas sejam alcançadas.
-                    Estamos abertos a negociar os critérios dos bônus, o calendário de pagamentos e as demais condições contratuais para chegarmos a um acordo satisfatório para ambos os clubes.
-                    Atenciosamente,
-                    Departamento de Futebol
-                    Real Madrid`            
 
 function offerAnalysisPrompt(
     params: {
@@ -98,26 +92,33 @@ async function chatWithPersona(
     question: string
 ){
     const systemPrompt = PERSONAS[persona];
-    contextWindow.addUserMessage(question);
+    const userMessage = contextWindow.addUserMessage(question);
+    messageRepository.save(windowId, userMessage);
     const response = await generateWithCritique(systemPrompt, contextWindow);
-    contextWindow.addAssistantMessage(response);
+    const assistantMessage = contextWindow.addAssistantMessage(response);
+    messageRepository.save(windowId, assistantMessage);
     console.log(`\n\n[${persona.toUpperCase()}] resposta:\n`, response)    
 }
 
 await chatWithPersona("analistaProposta",offerAnalysisPrompt({
-        offerText: offer, 
+        offerText: OFFER.offer1, 
         clientType: "international team",
     })
 )
 
 await chatWithPersona("analistaProposta",offerAnalysisPrompt({
-        offerText: offer2, 
+        offerText: OFFER.offer2, 
         clientType: "international team",
     })
 )
 
 await chatWithPersona("analistaProposta",offerAnalysisPrompt({
-        offerText: offer3, 
+        offerText: OFFER.offer3, 
         clientType: "international team",
     })
 )
+
+console.log("\n\n -------------- \nResumo do histórico de mensagens:\n ---------------------------");
+console.log(await summarizeHistory(contextWindow));
+    
+console.log("\n\n -------------- \nPara resumir essa sessão, utilize o seguinte identificador: ", windowId);

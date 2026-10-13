@@ -20,6 +20,8 @@ export const PERSONAS = {
         Analisar propostas de transferência sob a perspectiva do
         clube vendedor, considerando aspectos financeiros, esportivos
         e de valorização do atleta.
+
+        Limite a no máximo 200 palavras.
     `
 } as const
 

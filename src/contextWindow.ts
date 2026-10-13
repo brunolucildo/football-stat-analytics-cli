@@ -2,18 +2,35 @@ import type { Message } from "./utils/types.ts"
 
 export class ContextWindow {
     private history: Message[] = [];
+    private maxHistoryLength: number;
 
-    constructor(private readonly maxHistoryLength: number = 3) {}
-
-    addUserMessage(content: string) {
-        this.history.push({ role: "user", content });
+    constructor(maxHistoryLength: number = 100) {
+        this.maxHistoryLength = maxHistoryLength;
     }
 
-    addAssistantMessage(content: string) {
-        this.history.push({ role: "assistant", content });
+    addUserMessage(content: string): Message {
+        const message : Message = { role: "user", content };
+        this.history.push(message);
+        this.slidingWindow();
+        return message;
     }
+
+    addAssistantMessage(content: string): Message {
+        const message : Message = { role: "assistant", content };
+        this.history.push(message);
+        this.slidingWindow();
+        return message;
+    }   
     
-    getMessages(){
+    restore(role: Message["role"], content: string) {
+        this.history.push({role, content});
+    }
+
+    getMessages(){        
+        return this.history;
+    }
+
+    private slidingWindow(){
         const limit = this.maxHistoryLength * 2; // Each interaction consists of a user and an assistant message
 
         if (this.history.length > limit) {
