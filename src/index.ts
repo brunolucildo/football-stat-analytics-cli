@@ -1,6 +1,7 @@
 import * as crypto from 'node:crypto';
 import { generateWithCritique } from './utils/generateWithCritique.ts';
-import { PERSONAS } from './utils/pesonas.ts';
+import type { PersonaName } from './utils/pesonas.ts';
+import { buildSystemPrompt } from './utils/prompts.ts';
 import { OFFER } from './utils/offers.ts';
 import { ContextWindow } from './contextWindow.ts';
 import { summarizeHistory } from './utils/summarizeHistory.ts';
@@ -88,10 +89,10 @@ function offerAnalysisPrompt(
 }
 
 async function chatWithPersona( 
-    persona: keyof typeof PERSONAS,
+    persona: PersonaName,
     question: string
 ){
-    const systemPrompt = PERSONAS[persona];
+    const systemPrompt = buildSystemPrompt(persona);
     const userMessage = contextWindow.addUserMessage(question);
     messageRepository.save(windowId, userMessage);
     const response = await generateWithCritique(systemPrompt, contextWindow);
