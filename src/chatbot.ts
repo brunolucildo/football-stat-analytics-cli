@@ -5,6 +5,9 @@ import { ContextWindow } from "./contextWindow.ts";
 import { MessageRepository } from "./messageRepository.ts";
 import { maybeCompress } from "./utils/maybeCompress.ts";
 import { stitchContext } from "./utils/stitchContext.ts";
+import { validateInput } from "./utils/validateInput.ts";
+import { blockedWords, hallucinationSignals } from "./utils/blockedWords.ts";
+import { validateOutput } from "./utils/validateOutputs.ts";
 
 const systemPrompt = process.argv[2];
 const windowId = process.argv[3] || crypto.randomUUID();
@@ -25,9 +28,16 @@ initialMessages.forEach(message => {
 
 while(true){
     const userPrompt = await rl.question("Você (digite sua análise ou 'sair' para encerrar): ")
+
     if (userPrompt.toLowerCase() === "sair") {
         console.log("Encerrado o chatbot. Até logo!")
         break;
+    }
+
+    const inputResult = validateInput(userPrompt, blockedWords);
+    if (!inputResult.isValid) {
+        console.log("Entrada inválida:", inputResult.errors.join(", "));
+        continue;
     }
     
     messageRepository.save(
@@ -44,6 +54,12 @@ while(true){
 
     const fullResponse = await streamResponse(stitched, systemPrompt);
     
+    const outputResult = validateOutput(fullResponse, hallucinationSignals);
+    if (!outputResult.isValid) {
+        console.log("Saída inválida:", outputResult.errors.join(", "));
+        continue;
+    } 
+
     messageRepository.save(
         windowId, 
         contextWindow.addAssistantMessage(fullResponse)
