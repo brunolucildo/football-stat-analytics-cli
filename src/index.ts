@@ -83,6 +83,6 @@ await chatWithPersona("analistaProposta",offerAnalysisPrompt({
 )
 
 console.log("\n\n -------------- \nResumo do histórico de mensagens:\n ---------------------------");
-console.log(await summarizeHistory(contextWindow));
+console.log(await summarizeHistory(contextWindow.getMessages()));
     
 console.log("\n\n -------------- \nPara resumir essa sessão, utilize o seguinte identificador: ", windowId);

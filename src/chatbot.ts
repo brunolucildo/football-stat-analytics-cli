@@ -1,9 +1,10 @@
 import * as readLine from "node:readline/promises"
 import * as crypto from 'node:crypto';
-import type { Message } from "./utils/types.ts"
 import { streamResponse } from "./utils/streamResponse.ts"
 import { ContextWindow } from "./contextWindow.ts";
 import { MessageRepository } from "./messageRepository.ts";
+import { maybeCompress } from "./utils/maybeCompress.ts";
+import { stitchContext } from "./utils/stitchContext.ts";
 
 const systemPrompt = process.argv[2];
 const windowId = process.argv[3] || crypto.randomUUID();
@@ -34,9 +35,14 @@ while(true){
         contextWindow.addUserMessage(userPrompt)
     );
 
+    const compressed = await maybeCompress(contextWindow);
+    const stitched = stitchContext({
+        recentMessages: compressed,
+    });
+
     process.stdout.write("Analista: Estou analisando, aguarde...\n\n")
 
-    const fullResponse = await streamResponse(contextWindow.getMessages(), systemPrompt);
+    const fullResponse = await streamResponse(stitched, systemPrompt);
     
     messageRepository.save(
         windowId, 

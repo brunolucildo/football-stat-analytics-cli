@@ -1,8 +1,7 @@
 import { openai } from "../clients/openai.ts";
-import { ContextWindow } from "../contextWindow.ts";
-import { generateWithCritique } from "./generateWithCritique.ts";
+import { Message } from "./types.ts";
 
-export async function summarizeHistory(contextWindow: ContextWindow): Promise<string> {
+export async function summarizeHistory(messages: Message[]): Promise<string> {
 
     const systemPrompt = `Você é um assistente que resume o histórico de mensagens entre o usuário e o assistente. 
                             O resumo deve ser conciso, objetivo e destacar os pontos principais das interações. 
@@ -12,7 +11,7 @@ export async function summarizeHistory(contextWindow: ContextWindow): Promise<st
         model: "gpt-4o-mini",
         messages: [
             {role: "system", content: systemPrompt},
-            ...contextWindow.getMessages(),
+            ...messages
         ], 
     });
 
