@@ -1,28 +1,71 @@
 import * as readLine from "node:readline/promises"
-import type { Message } from "./utils/types.ts"
+import * as crypto from 'node:crypto';
 import { streamResponse } from "./utils/streamResponse.ts"
+import { ContextWindow } from "./contextWindow.ts";
+import { MessageRepository } from "./messageRepository.ts";
+import { maybeCompress } from "./utils/maybeCompress.ts";
+import { stitchContext } from "./utils/stitchContext.ts";
+import { validateInput } from "./utils/validateInput.ts";
+import { blockedWords, hallucinationSignals } from "./utils/blockedWords.ts";
+import { validateOutput } from "./utils/validateOutputs.ts";
 
-const systemPrompt = process.argv[2]
+const systemPrompt = process.argv[2];
+const windowId = process.argv[3] || crypto.randomUUID();
+
 const rl = readLine.createInterface({
     input: process.stdin,
     output: process.stdout
 })
-const history: Message[] = [];
+
+const contextWindow = new ContextWindow();
+const messageRepository = new MessageRepository();
+
+const initialMessages = messageRepository.load(windowId);
+initialMessages.forEach(message => {
+    contextWindow.restore(message.role, message.content);
+});
+
 
 while(true){
     const userPrompt = await rl.question("Você (digite sua análise ou 'sair' para encerrar): ")
+
     if (userPrompt.toLowerCase() === "sair") {
         console.log("Encerrado o chatbot. Até logo!")
         break;
     }
 
-    history.push({ role:"user", content: userPrompt});
+    const inputResult = validateInput(userPrompt, blockedWords);
+    if (!inputResult.isValid) {
+        console.log("Entrada inválida:", inputResult.errors.join(", "));
+        continue;
+    }
+    
+    messageRepository.save(
+        windowId, 
+        contextWindow.addUserMessage(userPrompt)
+    );
+
+    const compressed = await maybeCompress(contextWindow);
+    const stitched = stitchContext({
+        recentMessages: compressed,
+    });
 
     process.stdout.write("Analista: Estou analisando, aguarde...\n\n")
 
-    const fullResponse = await streamResponse(history, systemPrompt);
+    const fullResponse = await streamResponse(stitched, systemPrompt);
     
-    history.push({role: "assistant", content: fullResponse})
+    const outputResult = validateOutput(fullResponse, hallucinationSignals);
+    if (!outputResult.isValid) {
+        console.log("Saída inválida:", outputResult.errors.join(", "));
+        continue;
+    } 
+
+    messageRepository.save(
+        windowId, 
+        contextWindow.addAssistantMessage(fullResponse)
+    );
 }
+
+console.log(`\n\n -------------- \nIdentificador da sessão: ${windowId}\n ---------------------------`);
 
 rl.close();
