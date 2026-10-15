@@ -1,82 +1,115 @@
 # Football Stat Analytics CLI
 
-CLI experimental para analisar desempenho de atletas e propostas de transferência com apoio da API da OpenAI. As análises são geradas pelo modelo `gpt-4o-mini` a partir das informações fornecidas pelo usuário; o projeto não busca estatísticas em bases externas.
+An experimental command-line application for football player performance analysis and transfer-offer evaluation, powered by the OpenAI API. The application analyzes only the information provided in the conversation; it does not retrieve player statistics or market data from external sources.
 
-## Recursos
+## Features
 
-- **Análise esportiva:** avalia Pace, Shot, Pass, Dribble, Defence, Physic e Overall. Cada atributo recebe uma nota inteira de 0 a 99 e uma justificativa objetiva, em um JSON definido pelo prompt.
-- **Análise de propostas:** considera valor de mercado e oferta, idade, potencial, desempenho, posição, contrato e condições da negociação quando essas informações forem fornecidas. A recomendação é `ACEITAR`, `NEGOCIAR` ou `RECUSAR`.
-- **Personas e políticas:** cada analista tem instruções e critérios próprios. As análises devem se limitar aos dados informados, sem inventar estatísticas ou fatos.
-- **Revisão com crítica:** o fluxo de análise de proposta gera uma resposta inicial, solicita uma crítica ao modelo e, se necessário, pede uma versão revisada.
-- **Chat interativo com streaming:** permite conversar com o analista esportivo ou usar outro prompt de sistema, mantendo o histórico durante a sessão e exibindo a resposta à medida que é gerada.
-- **Tentativas com backoff:** o fluxo de geração com crítica repete chamadas em erros de limite de taxa e de conexão, além de erros de API elegíveis.
+- **Player performance analysis:** evaluates Pace, Shot, Pass, Dribble, Defence, Physic, and Overall. The sports analyst is instructed to return a JSON object with scores from 0 to 99 where the supplied evidence is sufficient.
+- **Transfer offer analysis:** evaluates a proposal from the selling club's perspective and returns one of three recommendations: `ACEITAR` (accept), `NEGOCIAR` (negotiate), or `RECUSAR` (reject). It can consider market value, offer structure, bonuses, contract details, and sporting factors when provided.
+- **Persona-based policies:** provides sports-performance and transfer-market analyst personas with defined scopes, evaluation rules, and output formats.
+- **Draft, critique, and revision:** the transfer-analysis flow asks the model to critique its first response and revises it when the critique is not `approved`.
+- **Interactive streaming chat:** streams responses to the terminal and supports a custom system prompt or the default sports-analyst persona.
+- **Persistent conversation history:** stores user and assistant messages in a local SQLite database and restores them when the same session ID is used again.
+- **Context management:** estimates token usage and summarizes older messages when the interactive chat's context reaches its configured threshold.
+- **Input and output checks:** applies basic blocked-word checks to user messages and checks generated responses for configured hallucination signals.
+- **Retry helper:** retries API calls in the draft/critique/revision flow with exponential delays.
 
-> As notas e recomendações são produzidas por um modelo de linguagem e não são validadas contra dados oficiais. Forneça contexto suficiente e revise os resultados antes de usá-los em decisões.
+> This project is experimental. Model-generated scores and recommendations are not verified against official statistics or market data. Validation and blocked-word checks are simple safeguards, not a substitute for reviewing the results.
 
-## Requisitos
+## Requirements
 
-- Node.js **22.6 ou superior** (para executar arquivos TypeScript com remoção de tipos nativa).
-- Uma chave de API da OpenAI com acesso ao `gpt-4o-mini`.
+- Node.js **22.6 or later**, for native TypeScript type stripping and the built-in SQLite module.
+- An OpenAI API key with access to `gpt-4o-mini`.
 
-## Instalação e configuração
+## Installation and configuration
+
+Install the dependencies:
 
 ```bash
 npm install
 ```
 
-Crie `.env.local` a partir do exemplo e preencha `OPENAI_API_KEY` com sua chave:
+Create `.env.local` from `.env.example`, then set `OPENAI_API_KEY` to your API key. On Windows, run:
 
-```bash
+```powershell
 npm run env:setup
 ```
 
-O script `env:setup` usa o comando `copy` do Windows. Em macOS ou Linux, crie o arquivo manualmente:
+On macOS or Linux, use:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Não compartilhe nem versione sua chave de API. O arquivo `.env.local` é lido pelo Node ao executar os comandos abaixo.
+Edit `.env.local` and replace the placeholder value. Do not share or commit your API key. Node loads this file when run with the `--env-file` option in the commands below.
 
-## Como executar
+## Usage
 
-### Demonstração de análise de proposta
+### Run the transfer-offer demonstration
 
 ```bash
 node --experimental-strip-types --env-file=.env.local src/index.ts
 ```
 
-O exemplo em `src/index.ts` analisa uma proposta fictícia dirigida ao Palmeiras e classifica o clube interessado como internacional. A postura para clubes nacionais e internacionais é ajustada no prompt da proposta.
+The demonstration evaluates three example offers for Gabriel Martins from the perspective of Palmeiras. The example player, estimated market value, and offers are defined in the source code; they are not loaded from a live data source.
 
-### Chat interativo
+To resume or extend a prior session, pass its session ID as the first argument:
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/chatbot.ts "Você é um especialista em análise de desempenho no futebol."
+node --experimental-strip-types --env-file=.env.local src/index.ts <session-id>
 ```
 
-Digite uma solicitação no terminal. Para encerrar, digite `sair`. Se nenhum prompt de sistema for informado, o chatbot usa a persona de analista esportivo.
+### Start the interactive chat
 
-## Estrutura do projeto
+```bash
+node --experimental-strip-types --env-file=.env.local src/chatbot.ts
+```
+
+By default, the chat uses the sports-performance analyst persona. You can provide a custom system prompt as the first argument:
+
+```bash
+node --experimental-strip-types --env-file=.env.local src/chatbot.ts "You are a football performance analyst."
+```
+
+Use `sair` to end the chat. The application prints the session ID when it exits. Pass that ID as the second argument, after the system prompt, to restore the conversation:
+
+```bash
+node --experimental-strip-types --env-file=.env.local src/chatbot.ts "You are a football performance analyst." <session-id>
+```
+
+The application creates `pos_ia-m3.db` in the current working directory and creates its `messages` table if needed. Keep this file to retain conversation history.
+
+## Project structure
 
 ```text
 src/
-├── index.ts                    # Exemplo executável de análise de proposta
-├── chatbot.ts                  # Chat interativo com histórico e streaming
-├── pesonas.ts                  # Personas disponíveis
-├── policies.ts                 # Critérios e formatos esperados para cada análise
-├── prompts.ts                  # Composição do prompt de sistema
-├── types.ts                    # Tipos compartilhados do histórico
+├── index.ts                     # Transfer-offer analysis demonstration
+├── chatbot.ts                   # Interactive streaming chat
+├── contextWindow.ts             # In-memory conversation history
+├── messageRepository.ts          # SQLite message persistence
 ├── clients/
-│   └── openai.ts               # Cliente da API OpenAI
+│   └── openai.ts                # OpenAI API client
 └── utils/
-    ├── generateWithCritique.ts # Geração, crítica e revisão da resposta
-    ├── streamResponse.ts       # Geração em streaming
-    └── withRetry.ts            # Retentativas com backoff exponencial
+    ├── blockedWords.ts          # Input and output validation signals
+    ├── estimateTokens.ts        # Approximate context token estimator
+    ├── generateWithCritique.ts  # Draft, critique, and revision flow
+    ├── maybeCompress.ts         # Context summarization threshold
+    ├── offers.ts                # Sample transfer offers
+    ├── pesonas.ts               # Analyst personas
+    ├── policies.ts              # Analysis policies and output formats
+    ├── prompts.ts               # System prompt composition
+    ├── stitchContext.ts         # Builds summarized conversation context
+    ├── streamResponse.ts        # Streaming chat completion
+    ├── summarizeHistory.ts      # Conversation summarization
+    ├── types.ts                 # Shared message and validation types
+    ├── validateInput.ts         # User input validation
+    ├── validateOutputs.ts       # Generated response checks
+    └── withRetry.ts             # Exponential retry helper
 ```
 
-## Tecnologias
+## Technologies
 
-- TypeScript com módulos ES.
-- Node.js com suporte nativo à remoção de tipos.
-- OpenAI Node SDK e API `gpt-4o-mini`.
-- `node:readline/promises` para a interface interativa no terminal.
+- TypeScript with native Node.js type stripping and ES modules.
+- Node.js built-in `node:sqlite` module for local conversation storage.
+- OpenAI Node SDK and the `gpt-4o-mini` model.
+- `node:readline/promises` for terminal input.
