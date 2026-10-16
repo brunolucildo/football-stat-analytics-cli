@@ -6,7 +6,8 @@ An experimental command-line application for football player performance analysi
 
 - **Player performance analysis:** evaluates Pace, Shot, Pass, Dribble, Defence, Physic, and Overall. The sports analyst is instructed to return a JSON object with scores from 0 to 99 where the supplied evidence is sufficient.
 - **Transfer offer analysis:** evaluates a proposal from the selling club's perspective and returns one of three recommendations: `ACEITAR` (accept), `NEGOCIAR` (negotiate), or `RECUSAR` (reject). It can consider market value, offer structure, bonuses, contract details, and sporting factors when provided.
-- **Persona-based policies:** provides sports-performance and transfer-market analyst personas with defined scopes, evaluation rules, and output formats.
+- **Persona-based policies:** provides sports-performance, transfer-market, and Scout Vision (SV) analysis personas with defined scopes and evaluation rules.
+- **Scout Vision analysis:** supports pre-match opponent scouting, post-match player review, and progress tracking, structured from team-level context to individual matchups and tailored to the player's position and playing model.
 - **Draft, critique, and revision:** the transfer-analysis flow asks the model to critique its first response and revises it when the critique is not `approved`.
 - **Interactive streaming chat:** streams responses to the terminal and supports a custom system prompt or the default sports-analyst persona.
 - **Persistent conversation history:** stores user and assistant messages in a local SQLite database and restores them when the same session ID is used again.
@@ -65,10 +66,18 @@ node --experimental-strip-types --env-file=.env.local src/index.ts <session-id>
 node --experimental-strip-types --env-file=.env.local src/chatbot.ts
 ```
 
-By default, the chat uses the sports-performance analyst persona. You can provide a custom system prompt as the first argument:
+By default, the chat uses the sports-performance analyst persona. To use the Scout Vision methodology persona, pass `analistaSV` as the first argument:
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/chatbot.ts "You are a football performance analyst."
+node --experimental-strip-types --env-file=.env.local src/chatbot.ts analistaSV
+```
+
+For a useful SV analysis, include the player's position, team playing model, match context, and relevant observations, statistics, or match clips in your chat. The persona does not fetch or watch matches; it only analyzes information supplied in the conversation. For progress tracking, provide comparable quantitative and qualitative indicators from multiple periods.
+
+You can also provide a custom system prompt as the first argument. When resuming a chat that uses a named persona, pass the session ID as the second argument:
+
+```bash
+node --experimental-strip-types --env-file=.env.local src/chatbot.ts analistaSV <session-id>
 ```
 
 Use `sair` to end the chat. The application prints the session ID when it exits. Pass that ID as the second argument, after the system prompt, to restore the conversation:

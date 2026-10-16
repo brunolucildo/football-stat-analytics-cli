@@ -1,7 +1,7 @@
 node_modules
+Metodologia - SV.pdf
 
 #envs
 .env
 .env.*
 !.env.example
-
