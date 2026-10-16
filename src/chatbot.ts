@@ -8,8 +8,13 @@ import { stitchContext } from "./utils/stitchContext.ts";
 import { validateInput } from "./utils/validateInput.ts";
 import { blockedWords, hallucinationSignals } from "./utils/blockedWords.ts";
 import { validateOutput } from "./utils/validateOutputs.ts";
+import { isPersonaName } from "./utils/pesonas.ts";
+import { buildSystemPrompt } from "./utils/prompts.ts";
 
-const systemPrompt = process.argv[2];
+const promptArgument = process.argv[2];
+const systemPrompt = promptArgument && isPersonaName(promptArgument)
+    ? buildSystemPrompt(promptArgument)
+    : promptArgument;
 const windowId = process.argv[3] || crypto.randomUUID();
 
 const rl = readLine.createInterface({
