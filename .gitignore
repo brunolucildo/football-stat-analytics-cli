@@ -1,5 +1,5 @@
 node_modules
-Metodologia - SV.pdf
+*.pdf
 
 #envs
 .env
