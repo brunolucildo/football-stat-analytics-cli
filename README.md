@@ -1,21 +1,18 @@
 # Football Stat Analytics CLI
 
-An experimental command-line application for football player performance analysis and transfer-offer evaluation, powered by the OpenAI API. The application analyzes only the information provided in the conversation; it does not retrieve player statistics or market data from external sources.
+An experimental command-line application for football analysis powered by the OpenAI API. It can extract text from local PDF reports, index that text as embeddings in SQLite, and answer questions using the most relevant passages. It also includes an interactive streaming chatbot.
 
 ## Features
 
-- **Player performance analysis:** evaluates Pace, Shot, Pass, Dribble, Defence, Physic, and Overall. The sports analyst is instructed to return a JSON object with scores from 0 to 99 where the supplied evidence is sufficient.
-- **Transfer offer analysis:** evaluates a proposal from the selling club's perspective and returns one of three recommendations: `ACEITAR` (accept), `NEGOCIAR` (negotiate), or `RECUSAR` (reject). It can consider market value, offer structure, bonuses, contract details, and sporting factors when provided.
-- **Persona-based policies:** provides sports-performance, transfer-market, and Scout Vision (SV) analysis personas with defined scopes and evaluation rules.
-- **Scout Vision analysis:** supports pre-match opponent scouting, post-match player review, and progress tracking, structured from team-level context to individual matchups and tailored to the player's position and playing model.
-- **Draft, critique, and revision:** the transfer-analysis flow asks the model to critique its first response and revises it when the critique is not `approved`.
+- **PDF report ingestion:** extracts text from the configured reports in `relatorios/`, splits it into chunks, generates embeddings, and stores them in `vector_db.db`.
+- **Retrieval-augmented answers (RAG):** embeds a question, retrieves the five most similar stored chunks, and asks the model to answer using that context.
 - **Interactive streaming chat:** streams responses to the terminal and supports a custom system prompt or the default sports-analyst persona.
 - **Persistent conversation history:** stores user and assistant messages in a local SQLite database and restores them when the same session ID is used again.
 - **Context management:** estimates token usage and summarizes older messages when the interactive chat's context reaches its configured threshold.
 - **Input and output checks:** applies basic blocked-word checks to user messages and checks generated responses for configured hallucination signals.
-- **Retry helper:** retries API calls in the draft/critique/revision flow with exponential delays.
+- **AI personas and policies:** includes sports-performance, transfer-market, and Scout Vision (SV) instructions.
 
-> This project is experimental. Model-generated scores and recommendations are not verified against official statistics or market data. Validation and blocked-word checks are simple safeguards, not a substitute for reviewing the results.
+> This project is experimental. Model-generated answers are not verified against official statistics or market data. PDF ingestion extracts text and does not perform OCR; image-only or scanned reports may not produce usable text. The input and output checks are simple safeguards, not a substitute for reviewing results.
 
 ## Requirements
 
@@ -46,19 +43,23 @@ Edit `.env.local` and replace the placeholder value. Do not share or commit your
 
 ## Usage
 
-### Run the transfer-offer demonstration
+### Index the PDF reports
+
+```bash
+node --experimental-strip-types --env-file=.env.local src/ingest.ts
+```
+
+The ingest entry point currently reads the Nil Coch and Kevin Kelsy reports from `relatorios/`. Update the `sources` array in `src/ingest.ts` to add or remove reports. The PDF files are not included in the repository, so place the reports at the listed paths before running ingestion.
+
+The extracted text is split into chunks, embedded with OpenAI, and saved in `vector_db.db`. This database persists between runs. Running ingestion again inserts the configured reports again; it does not replace or deduplicate previously indexed chunks.
+
+### Ask a question about indexed reports
 
 ```bash
 node --experimental-strip-types --env-file=.env.local src/index.ts
 ```
 
-The demonstration evaluates three example offers for Gabriel Martins from the perspective of Palmeiras. The example player, estimated market value, and offers are defined in the source code; they are not loaded from a live data source.
-
-To resume or extend a prior session, pass its session ID as the first argument:
-
-```bash
-node --experimental-strip-types --env-file=.env.local src/index.ts <session-id>
-```
+The question is currently defined directly in `src/index.ts`. Change that string to ask a different question. Run PDF ingestion first so the vector database contains report content.
 
 ### Start the interactive chat
 
@@ -92,12 +93,12 @@ The application creates `pos_ia-m3.db` in the current working directory and crea
 
 ```text
 src/
-├── index.ts                     # Transfer-offer analysis demonstration
+├── index.ts                     # RAG question-and-answer entry point
 ├── chatbot.ts                   # Interactive streaming chat
 ├── contextWindow.ts             # In-memory conversation history
 ├── messageRepository.ts          # SQLite message persistence
-├── vectorRepository.ts           # SQLite vector storage and search
-├── ingest.ts                     # PDF ingestion entry point
+├── vectorRepository.ts          # SQLite vector storage and similarity search
+├── ingest.ts                    # PDF extraction and ingestion entry point
 ├── clients/
 │   └── openai.ts                # OpenAI API client
 ├── ai/
@@ -113,11 +114,13 @@ src/
 │   ├── validateInput.ts         # User input validation
 │   └── validateOutputs.ts       # Generated response checks
 └── utils/
+    ├── buildRagPrompt.ts        # Builds the context-grounded question prompt
     ├── chunkText.ts             # Splits text into chunks
     ├── cosineSimilarity.ts      # Vector similarity calculation
     ├── estimateTokens.ts        # Approximate context token estimator
-    ├── ingest.ts                # Stores document chunks and embeddings
+    ├── ingest.ts                # Embeds and stores document chunks
     ├── offers.ts                # Sample transfer offers
+    ├── ragAnswer.ts             # Retrieves context and generates an answer
     ├── stitchContext.ts         # Builds summarized conversation context
     ├── types.ts                 # Shared message and validation types
     └── withRetry.ts             # Exponential retry helper
@@ -127,5 +130,6 @@ src/
 
 - TypeScript with native Node.js type stripping and ES modules.
 - Node.js built-in `node:sqlite` module for local conversation storage.
-- OpenAI Node SDK and the `gpt-4o-mini` model.
+- OpenAI Node SDK (`gpt-4o-mini` and `text-embedding-3-small`).
+- `pdf-parse` for extracting text from PDF reports.
 - `node:readline/promises` for terminal input.
