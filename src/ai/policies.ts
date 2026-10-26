@@ -1,4 +1,4 @@
-import type { PersonaName } from "./pesonas.ts"
+import type { PersonaName } from "./personas.ts"
 
 export const POLICIES: Record<PersonaName, string> = {
     analistaEsportivo: `

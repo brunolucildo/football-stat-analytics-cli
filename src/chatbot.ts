@@ -1,15 +1,15 @@
 import * as readLine from "node:readline/promises"
 import * as crypto from 'node:crypto';
-import { streamResponse } from "./utils/streamResponse.ts"
+import { streamResponse } from "./ai/streamResponse.ts"
 import { ContextWindow } from "./contextWindow.ts";
 import { MessageRepository } from "./messageRepository.ts";
-import { maybeCompress } from "./utils/maybeCompress.ts";
+import { maybeCompress } from "./ai/maybeCompress.ts";
 import { stitchContext } from "./utils/stitchContext.ts";
-import { validateInput } from "./utils/validateInput.ts";
-import { blockedWords, hallucinationSignals } from "./utils/blockedWords.ts";
-import { validateOutput } from "./utils/validateOutputs.ts";
-import { isPersonaName } from "./utils/pesonas.ts";
-import { buildSystemPrompt } from "./utils/prompts.ts";
+import { validateInput } from "./ai/validateInput.ts";
+import { blockedWords, hallucinationSignals } from "./ai/blockedWords.ts";
+import { validateOutput } from "./ai/validateOutputs.ts";
+import { isPersonaName } from "./ai/personas.ts";
+import { buildSystemPrompt } from "./ai/prompts.ts";
 
 const promptArgument = process.argv[2];
 const systemPrompt = promptArgument && isPersonaName(promptArgument)

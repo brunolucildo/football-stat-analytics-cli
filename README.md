@@ -96,23 +96,30 @@ src/
 ├── chatbot.ts                   # Interactive streaming chat
 ├── contextWindow.ts             # In-memory conversation history
 ├── messageRepository.ts          # SQLite message persistence
+├── vectorRepository.ts           # SQLite vector storage and search
+├── ingest.ts                     # PDF ingestion entry point
 ├── clients/
 │   └── openai.ts                # OpenAI API client
+├── ai/
+│   ├── blockedWords.ts          # Input and output validation signals
+│   ├── embed.ts                 # OpenAI text embeddings
+│   ├── generateWithCritique.ts  # Draft, critique, and revision flow
+│   ├── maybeCompress.ts         # Context summarization threshold
+│   ├── personas.ts              # Analyst personas
+│   ├── policies.ts              # Analysis policies and output formats
+│   ├── prompts.ts               # System prompt composition
+│   ├── streamResponse.ts        # Streaming chat completion
+│   ├── summarizeHistory.ts      # Conversation summarization
+│   ├── validateInput.ts         # User input validation
+│   └── validateOutputs.ts       # Generated response checks
 └── utils/
-    ├── blockedWords.ts          # Input and output validation signals
+    ├── chunkText.ts             # Splits text into chunks
+    ├── cosineSimilarity.ts      # Vector similarity calculation
     ├── estimateTokens.ts        # Approximate context token estimator
-    ├── generateWithCritique.ts  # Draft, critique, and revision flow
-    ├── maybeCompress.ts         # Context summarization threshold
+    ├── ingest.ts                # Stores document chunks and embeddings
     ├── offers.ts                # Sample transfer offers
-    ├── pesonas.ts               # Analyst personas
-    ├── policies.ts              # Analysis policies and output formats
-    ├── prompts.ts               # System prompt composition
     ├── stitchContext.ts         # Builds summarized conversation context
-    ├── streamResponse.ts        # Streaming chat completion
-    ├── summarizeHistory.ts      # Conversation summarization
     ├── types.ts                 # Shared message and validation types
-    ├── validateInput.ts         # User input validation
-    ├── validateOutputs.ts       # Generated response checks
     └── withRetry.ts             # Exponential retry helper
 ```
 
