@@ -10,6 +10,7 @@ export async function ragAnswer(question: string, repo: VectorRepository) {
 
     //2. busca o chunks mais relevantes
     const result = repo.search(
+        question,
         questionEmbeddings
     )
     const chunks = result.map(r => r.chunk)

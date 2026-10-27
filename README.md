@@ -4,7 +4,7 @@ An experimental command-line application for football analysis powered by the Op
 
 ## Features
 
-- **PDF report ingestion:** extracts text from the configured reports in `relatorios/`, splits it into chunks, generates embeddings, and stores them in `vector_db.db`.
+- **PDF report ingestion:** extracts text from the configured reports in `relatorios/`, translates it from Spanish to Brazilian Portuguese, splits it into chunks, generates embeddings, and stores them in `vector_db.db`.
 - **Retrieval-augmented answers (RAG):** embeds a question, retrieves the five most similar stored chunks, and asks the model to answer using that context.
 - **Interactive streaming chat:** streams responses to the terminal and supports a custom system prompt or the default sports-analyst persona.
 - **Persistent conversation history:** stores user and assistant messages in a local SQLite database and restores them when the same session ID is used again.
@@ -51,7 +51,7 @@ node --experimental-strip-types --env-file=.env.local src/ingest.ts
 
 The ingest entry point automatically reads every PDF file in `relatorios/`; add or remove reports in that directory to control what gets indexed. Other file types and subdirectories are ignored. The PDF files are not included in the repository, so place the reports in `relatorios/` before running ingestion.
 
-The extracted text is split into chunks, embedded with OpenAI, and saved in `vector_db.db`. This database persists between runs. Running ingestion again inserts the configured reports again; it does not replace or deduplicate previously indexed chunks.
+The extracted text is translated from Spanish to Brazilian Portuguese with `gpt-4o-mini`, split into chunks, embedded with OpenAI, and saved in `vector_db.db`. Translation errors stop ingestion rather than indexing untranslated report text. This database persists between runs. Running ingestion again inserts the configured reports again; it does not replace or deduplicate previously indexed chunks.
 
 ### Ask a question about indexed reports
 
