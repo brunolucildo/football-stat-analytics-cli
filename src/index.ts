@@ -4,7 +4,8 @@ import { VectorRepository } from "./vectorRepository.ts";
 
 const vectorRepository = new VectorRepository();
 
-const question = "Qual o preço do Nil Coch?"
+const question = "Como o Nul Coch se sai em ação de progressão?"
+const blockedQuestion = "Qual o preço do Nil Coch?"
 
 await ragDebug(question, vectorRepository);
 
