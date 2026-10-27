@@ -49,7 +49,7 @@ Edit `.env.local` and replace the placeholder value. Do not share or commit your
 node --experimental-strip-types --env-file=.env.local src/ingest.ts
 ```
 
-The ingest entry point currently reads the Nil Coch and Kevin Kelsy reports from `relatorios/`. Update the `sources` array in `src/ingest.ts` to add or remove reports. The PDF files are not included in the repository, so place the reports at the listed paths before running ingestion.
+The ingest entry point automatically reads every PDF file in `relatorios/`; add or remove reports in that directory to control what gets indexed. Other file types and subdirectories are ignored. The PDF files are not included in the repository, so place the reports in `relatorios/` before running ingestion.
 
 The extracted text is split into chunks, embedded with OpenAI, and saved in `vector_db.db`. This database persists between runs. Running ingestion again inserts the configured reports again; it does not replace or deduplicate previously indexed chunks.
 
