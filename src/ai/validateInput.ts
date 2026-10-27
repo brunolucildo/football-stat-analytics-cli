@@ -1,4 +1,4 @@
-import type { ValidationResult } from "./types.ts";
+import type { ValidationResult } from "../utils/types.ts";
 
 export function validateInput(
     input: string,

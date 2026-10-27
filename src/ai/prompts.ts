@@ -1,4 +1,4 @@
-import { PERSONAS, type PersonaName } from "./pesonas.ts"
+import { PERSONAS, type PersonaName } from "./personas.ts"
 import { POLICIES } from "./policies.ts"
 
 const GLOBAL_INSTRUCTIONS = `
