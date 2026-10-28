@@ -89,6 +89,84 @@ node --experimental-strip-types --env-file=.env.local src/chatbot.ts "You are a 
 
 The application creates `pos_ia-m3.db` in the current working directory and creates its `messages` table if needed. Keep this file to retain conversation history.
 
+### Example chatbot interaction
+
+The default `analistaEsportivo` persona returns a JSON assessment. The scores below are illustrative: they show the response shape, not a fixed calculation from the event counts.
+
+```text
+Você (digite sua análise ou 'sair' para encerrar): Avalie este ponta: em 70 minutos, registrou 7 acelerações em transições ofensivas, completou 3 de 5 dribles, acertou 6 de 8 passes progressivos, finalizou 4 vezes (2 no alvo e 1 gol), ganhou 4 de 6 duelos defensivos e 5 de 8 duelos físicos.
+
+Analista: {
+  "pace": {
+    "score": 68,
+    "justification": "As sete acelerações em transições ofensivas indicam participação em ações de progressão."
+  },
+  "shot": {
+    "score": 72,
+    "justification": "As quatro finalizações, duas no alvo e um gol fornecem evidências positivas de conclusão."
+  },
+  "pass": {
+    "score": 68,
+    "justification": "Acertar seis de oito passes progressivos indica contribuição para a progressão da equipe."
+  },
+  "dribble": {
+    "score": 62,
+    "justification": "Completou três de cinco dribles, com sucesso em parte das tentativas."
+  },
+  "defence": {
+    "score": 60,
+    "justification": "Ganhou quatro de seis duelos defensivos, evidência de contribuição defensiva nesta amostra."
+  },
+  "physic": {
+    "score": 60,
+    "justification": "Ganhou cinco de oito duelos físicos; não há dados de resistência ou intensidade ao longo do jogo."
+  },
+  "overall": {
+    "score": 64,
+    "justification": "Síntese dos seis atributos com evidências disponíveis nesta amostra."
+  }
+}
+
+Você (digite sua análise ou 'sair' para encerrar): sair
+Encerrado o chatbot. Até logo!
+```
+
+Scores are qualitative judgments guided by the supplied evidence; the application does not calculate them from a statistical formula. Actual answers can differ, and the model may still make mistakes. Use `sair` to finish and copy the printed session ID to resume later.
+
+## Technical behavior and limitations
+
+### OpenAI API errors and retries
+
+The OpenAI client is created in `src/clients/openai.ts` from `OPENAI_API_KEY`. The SDK's default retry policy allows two retries for transient connection failures and selected HTTP responses (including 408, 409, 429, and 5xx); it also uses retry headers when provided by the API. Authentication, permission, and invalid-request errors generally need a configuration or input change rather than another attempt.
+
+The project adds `withRetry` around report translation and the optional draft/critique/revision flow. That helper makes up to three calls, retrying rate-limit, connection, timeout, and server errors with exponential waits (2 seconds, then 4 seconds with its defaults). Because the SDK also retries internally, these wrapped operations can make more than three HTTP attempts. Other operations—including the interactive streaming response, embeddings, history summarization, and RAG completion—use the SDK's retries but are not wrapped by this project helper.
+
+Input validation rejects empty, overlong, or blocked-word messages before they are saved. A response that fails the configured output check is reported and is not saved as an assistant message. API, database, and other unexpected errors are not converted into friendly chatbot messages: they propagate to the command line and can stop the current process. The user's message is saved before the API request, so a failed request may leave an unmatched user turn in the session history. Streaming output also cannot resume automatically if a stream fails after it has started. Keep the terminal error details for troubleshooting; do not paste API keys into logs or reports.
+
+### Token and context management
+
+The interactive chat estimates tokens by dividing the character count of stored message content by three. This is a lightweight heuristic, not the OpenAI tokenizer: it excludes message roles, the system prompt, request formatting, and other API overhead, and accuracy varies by language and content. It should not be used to predict billing or guarantee that a request fits a model context window.
+
+When this estimate reaches 4,096, the application summarizes the older half of the conversation and sends that summary together with the newer half. The summary is a separate OpenAI request. This compression changes the context sent for that response, not the SQLite conversation history; old messages remain persisted and can be summarized again on a later turn. The in-memory sliding window separately retains at most 100 user/assistant exchanges after it is applied. These are application-level controls, not an exact token budget. The requests do not set an explicit maximum completion-token value, and the context estimate does not include the persona's system prompt.
+
+### Metrics and how to interpret them
+
+The analyst personas organize player evidence into dimensions rather than applying a hidden statistical formula:
+
+| Dimension | Evidence considered | Why it matters |
+|---|---|---|
+| **Pace** | Speed, acceleration, movement, and transitions | Describes the player's ability to gain or cover space and contribute during changes of phase. |
+| **Shot** | Attempts, goals, and the quality of finishes | Separates evidence about concluding attacks from performance in other areas. |
+| **Pass** | Passing accuracy, build-up, and chance creation | Helps describe how the player retains possession, advances play, or creates opportunities. |
+| **Dribble** | Ball control, carries, dribbles, and progression with the ball | Captures individual progress with possession; a dribble alone is not treated as evidence of pace or passing. |
+| **Defence** | Marking, tackles, interceptions, pressure, and recovery | Describes defensive contribution; physical duels count here only when the data identifies a defensive action. |
+| **Physic** | Strength, physical duels, stamina, and intensity | Describes physical contribution and is not inferred solely from tackles or defensive actions. |
+| **Overall** | Synthesis of dimensions with sufficient evidence | Provides a bounded summary; missing evidence is a limitation, not a zero or a negative performance. |
+
+Scores range from 0 to 99 when a dimension can be assessed, but they are qualitative evidence-based judgments, not percentiles, probabilities, or direct conversions from counts and percentages. The model should use only information supplied in the conversation, avoid comparisons without a supplied benchmark, and explain when the sample is insufficient. Counts describe volume; a rate adds context when both numerator and denominator are known (for example, 3 successful dribbles from 5 attempts is 60%, but does not by itself establish whether the performance was good for that role or match). Likewise, shot attempts, shots on target, and goals describe different parts of finishing; a pass total does not establish progression or chance creation; and a duel should be identified as defensive or physical before it is assigned to a dimension. For a stronger assessment, provide the match period, position, role, sample size, and comparable observations or statistics.
+
+For report retrieval, a different score ranks text chunks: `hybridScore` combines cosine similarity between embeddings (70% by default) with keyword overlap (30%). Chunks below 0.39 are filtered out, and at most five are sent to the answer prompt. This score measures relevance to the query—not a player's performance, factual certainty, or answer quality. If no chunks meet the threshold, the prompt may have no report context and should not be treated as a verified answer.
+
 ## Project structure
 
 ```text
