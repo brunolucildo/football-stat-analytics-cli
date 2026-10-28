@@ -1,6 +1,10 @@
 import { OpenAI } from "openai";
 
-export async function withRetry<T>(fn: () => Promise<T>, retries: number = 3, delayInSecods: number = 1): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, retries: number = 3, delayInSeconds: number = 1): Promise<T> {
+    if (!Number.isInteger(retries) || retries < 1) {
+        throw new RangeError("Retry count must be a positive integer.");
+    }
+
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
             return await fn();
@@ -12,15 +16,15 @@ export async function withRetry<T>(fn: () => Promise<T>, retries: number = 3, de
                 error instanceof OpenAI.APIError &&
                 (error.status === 429 || error.status >= 500);
 
-            if (attempt === retries && !isRetryable) {
+            if (!isRetryable || attempt === retries) {
                 throw error;
             }
 
-            const exponentialDelay = Math.pow(2, attempt) * (delayInSecods * 1000);
+            const exponentialDelay = Math.pow(2, attempt) * (delayInSeconds * 1000);
             console.warn(`Attempt ${attempt} failed. Retrying in ${exponentialDelay}ms...`, error);
 
             await new Promise(resolve => setTimeout(resolve, exponentialDelay));
         }
     }
-    throw new Error(`Unreachable code: This should never be reached because all retry attempts have been exhausted.`);
+    throw new Error("Unreachable code: all retry attempts have been exhausted.");
 }
