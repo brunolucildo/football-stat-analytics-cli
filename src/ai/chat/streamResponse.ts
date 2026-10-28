@@ -1,6 +1,6 @@
-import { openai } from '../clients/openai.ts'
-import type { Message } from "../utils/types.ts"
-import { buildSystemPrompt } from './prompts.ts'
+import { openai } from '../../clients/openai.ts'
+import type { Message } from "../../shared/types.ts"
+import { buildSystemPrompt } from '../prompts/prompts.ts'
 
 export async function streamResponse( 
     history: Message[], 

@@ -1,5 +1,5 @@
 import { DatabaseSync } from "node:sqlite"
-import type { Message } from "./utils/types.ts";
+import type { Message } from "../shared/types.ts";
 
 export class MessageRepository {
     private db: DatabaseSync;

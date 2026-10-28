@@ -46,7 +46,7 @@ Edit `.env.local` and replace the placeholder value. Do not share or commit your
 ### Index the PDF reports
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/ingest.ts
+node --experimental-strip-types --env-file=.env.local src/cli/ingest-reports.ts
 ```
 
 The ingest entry point automatically reads every PDF file in `relatorios/`; add or remove reports in that directory to control what gets indexed. Other file types and subdirectories are ignored. The PDF files are not included in the repository, so place the reports in `relatorios/` before running ingestion.
@@ -56,21 +56,21 @@ The extracted text is translated from Spanish to Brazilian Portuguese with `gpt-
 ### Ask a question about indexed reports
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/index.ts
+node --experimental-strip-types --env-file=.env.local src/cli/ask.ts
 ```
 
-The question is currently defined directly in `src/index.ts`. Change that string to ask a different question. Run PDF ingestion first so the vector database contains report content.
+The question is currently defined directly in `src/cli/ask.ts`. Change that string to ask a different question. Run PDF ingestion first so the vector database contains report content.
 
 ### Start the interactive chat
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/chatbot.ts
+node --experimental-strip-types --env-file=.env.local src/cli/chat.ts
 ```
 
 By default, the chat uses the sports-performance analyst persona. To use the Scout Vision methodology persona, pass `analistaSV` as the first argument:
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/chatbot.ts analistaSV
+node --experimental-strip-types --env-file=.env.local src/cli/chat.ts analistaSV
 ```
 
 For a useful SV analysis, include the player's position, team playing model, match context, and relevant observations, statistics, or match clips in your chat. The persona does not fetch or watch matches; it only analyzes information supplied in the conversation. For progress tracking, provide comparable quantitative and qualitative indicators from multiple periods.
@@ -78,13 +78,13 @@ For a useful SV analysis, include the player's position, team playing model, mat
 You can also provide a custom system prompt as the first argument. When resuming a chat that uses a named persona, pass the session ID as the second argument:
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/chatbot.ts analistaSV <session-id>
+node --experimental-strip-types --env-file=.env.local src/cli/chat.ts analistaSV <session-id>
 ```
 
 Use `sair` to end the chat. The application prints the session ID when it exits. Pass that ID as the second argument, after the system prompt, to restore the conversation:
 
 ```bash
-node --experimental-strip-types --env-file=.env.local src/chatbot.ts "You are a football performance analyst." <session-id>
+node --experimental-strip-types --env-file=.env.local src/cli/chat.ts "You are a football performance analyst." <session-id>
 ```
 
 The application creates `pos_ia-m3.db` in the current working directory and creates its `messages` table if needed. Keep this file to retain conversation history.
@@ -171,37 +171,58 @@ For report retrieval, a different score ranks text chunks: `hybridScore` combine
 
 ```text
 src/
-├── index.ts                     # RAG question-and-answer entry point
-├── chatbot.ts                   # Interactive streaming chat
-├── contextWindow.ts             # In-memory conversation history
-├── messageRepository.ts          # SQLite message persistence
-├── vectorRepository.ts          # SQLite vector storage and similarity search
-├── ingest.ts                    # PDF extraction and ingestion entry point
+├── cli/
+│   ├── ask.ts                   # RAG question-and-answer entry point
+│   ├── chat.ts                  # Interactive streaming chat
+│   └── ingest-reports.ts        # PDF report ingestion entry point
 ├── clients/
 │   └── openai.ts                # OpenAI API client
 ├── ai/
-│   ├── blockedWords.ts          # Input and output validation signals
-│   ├── embed.ts                 # OpenAI text embeddings
-│   ├── generateWithCritique.ts  # Draft, critique, and revision flow
-│   ├── maybeCompress.ts         # Context summarization threshold
-│   ├── personas.ts              # Analyst personas
-│   ├── policies.ts              # Analysis policies and output formats
-│   ├── prompts.ts               # System prompt composition
-│   ├── streamResponse.ts        # Streaming chat completion
-│   ├── summarizeHistory.ts      # Conversation summarization
-│   ├── validateInput.ts         # User input validation
-│   └── validateOutputs.ts       # Generated response checks
-└── utils/
-    ├── buildRagPrompt.ts        # Builds the context-grounded question prompt
-    ├── chunkText.ts             # Splits text into chunks
-    ├── cosineSimilarity.ts      # Vector similarity calculation
-    ├── estimateTokens.ts        # Approximate context token estimator
-    ├── ingest.ts                # Embeds and stores document chunks
-    ├── offers.ts                # Sample transfer offers
-    ├── ragAnswer.ts             # Retrieves context and generates an answer
-    ├── stitchContext.ts         # Builds summarized conversation context
-    ├── types.ts                 # Shared message and validation types
-    └── withRetry.ts             # Exponential retry helper
+│   ├── chat/
+│   │   ├── generateWithCritique.ts # Draft, critique, and revision flow
+│   │   └── streamResponse.ts    # Streaming chat completion
+│   ├── embeddings/
+│   │   └── embed.ts             # OpenAI text embeddings
+│   ├── history/
+│   │   ├── maybeCompress.ts     # Context summarization threshold
+│   │   └── summarizeHistory.ts  # Conversation summarization
+│   ├── prompts/
+│   │   ├── personas.ts          # Analyst personas
+│   │   ├── policies.ts          # Analysis policies and output formats
+│   │   └── prompts.ts           # System prompt composition
+│   ├── reports/
+│   │   └── translateReport.ts   # Report translation
+│   └── safeguards/
+│       ├── blockedWords.ts      # Input and output validation signals
+│       ├── validateInput.ts     # User input validation
+│       └── validateOutputs.ts   # Generated response checks
+├── chat/
+│   ├── contextWindow.ts         # In-memory conversation history
+│   ├── estimateTokens.ts        # Approximate context token estimator
+│   └── stitchContext.ts         # Builds summarized conversation context
+├── rag/
+│   ├── answering/
+│   │   ├── answer.ts            # Generates an answer from retrieved context
+│   │   ├── buildPrompt.ts       # Builds the context-grounded question prompt
+│   │   ├── debug.ts             # Prints retrieved chunks and scores
+│   │   ├── safeAnswer.ts        # Applies scope and context checks
+│   │   └── types.ts             # RAG-specific types
+│   ├── ingestion/
+│   │   ├── chunkText.ts         # Splits text into chunks
+│   │   ├── extractPdf.ts        # Extracts text from PDF reports
+│   │   └── ingest.ts            # Translates, embeds, and stores chunks
+│   └── retrieval/
+│       ├── cosineSimilarity.ts  # Vector similarity calculation
+│       ├── hybridScore.ts       # Combines semantic and keyword relevance
+│       ├── keywordScore.ts      # Keyword relevance calculation
+│       └── vectorRepository.ts  # SQLite vector storage and search
+├── repositories/
+│   └── messageRepository.ts     # SQLite message persistence
+├── shared/
+│   ├── types.ts                # Shared message and validation types
+│   └── withRetry.ts            # Exponential retry helper
+└── transfers/
+    └── offers.ts               # Sample transfer offers
 ```
 
 ## Technologies

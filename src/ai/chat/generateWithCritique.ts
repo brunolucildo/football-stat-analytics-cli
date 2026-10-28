@@ -1,7 +1,7 @@
 
-import { openai } from "../clients/openai.ts"
-import { withRetry } from "../utils/withRetry.ts";
-import { ContextWindow } from "../contextWindow.ts";
+import { openai } from "../../clients/openai.ts"
+import { withRetry } from "../../shared/withRetry.ts";
+import { ContextWindow } from "../../chat/contextWindow.ts";
 
 export async function generateWithCritique(
     system: string,

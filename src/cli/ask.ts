@@ -1,6 +1,6 @@
-import { ragDebug } from "./utils/ragDebug.ts";
-import { safeRagAnswer } from "./utils/safeRagAnswer.ts";
-import { VectorRepository } from "./vectorRepository.ts";
+import { ragDebug } from "../rag/answering/debug.ts";
+import { safeRagAnswer } from "../rag/answering/safeAnswer.ts";
+import { VectorRepository } from "../rag/retrieval/vectorRepository.ts";
 
 const vectorRepository = new VectorRepository();
 

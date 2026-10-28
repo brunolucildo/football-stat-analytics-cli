@@ -1,15 +1,15 @@
 import * as readLine from "node:readline/promises"
 import * as crypto from 'node:crypto';
-import { streamResponse } from "./ai/streamResponse.ts"
-import { ContextWindow } from "./contextWindow.ts";
-import { MessageRepository } from "./messageRepository.ts";
-import { maybeCompress } from "./ai/maybeCompress.ts";
-import { stitchContext } from "./utils/stitchContext.ts";
-import { validateInput } from "./ai/validateInput.ts";
-import { blockedWords, hallucinationSignals } from "./ai/blockedWords.ts";
-import { validateOutput } from "./ai/validateOutputs.ts";
-import { isPersonaName } from "./ai/personas.ts";
-import { buildSystemPrompt } from "./ai/prompts.ts";
+import { streamResponse } from "../ai/chat/streamResponse.ts"
+import { ContextWindow } from "../chat/contextWindow.ts";
+import { MessageRepository } from "../repositories/messageRepository.ts";
+import { maybeCompress } from "../ai/history/maybeCompress.ts";
+import { stitchContext } from "../chat/stitchContext.ts";
+import { validateInput } from "../ai/safeguards/validateInput.ts";
+import { blockedWords, hallucinationSignals } from "../ai/safeguards/blockedWords.ts";
+import { validateOutput } from "../ai/safeguards/validateOutputs.ts";
+import { isPersonaName } from "../ai/prompts/personas.ts";
+import { buildSystemPrompt } from "../ai/prompts/prompts.ts";
 
 const promptArgument = process.argv[2];
 const systemPrompt = promptArgument && isPersonaName(promptArgument)

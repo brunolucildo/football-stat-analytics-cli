@@ -1,6 +1,6 @@
-import { embed } from "../ai/embed.ts";
-import { VectorRepository } from "../vectorRepository.ts";
-import { ragAnswer } from "./ragAnswer.ts";
+import { embed } from "../../ai/embeddings/embed.ts";
+import { VectorRepository } from "../retrieval/vectorRepository.ts";
+import { ragAnswer } from "./answer.ts";
 
 export async function safeRagAnswer(question: string, repo: VectorRepository, blockedSignals: string[]) {
 

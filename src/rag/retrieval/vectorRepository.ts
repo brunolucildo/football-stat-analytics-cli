@@ -1,7 +1,7 @@
 import { DatabaseSync } from "node:sqlite"
-import { cosineSimilarity } from "./utils/cosineSimilarity.ts";
-import { hybridScore } from "./utils/hybridScore.ts";
-import { keywordScore } from "./utils/keywordScore.ts";
+import { cosineSimilarity } from "./cosineSimilarity.ts";
+import { hybridScore } from "./hybridScore.ts";
+import { keywordScore } from "./keywordScore.ts";
 
 export class VectorRepository {
     private db: DatabaseSync;

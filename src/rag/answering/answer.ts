@@ -1,7 +1,7 @@
-import { embed } from "../ai/embed.ts";
-import { openai } from "../clients/openai.ts";
-import { VectorRepository } from "../vectorRepository.ts";
-import { buildRagPrompt } from "./buildRagPrompt.ts";
+import { embed } from "../../ai/embeddings/embed.ts";
+import { openai } from "../../clients/openai.ts";
+import { VectorRepository } from "../retrieval/vectorRepository.ts";
+import { buildRagPrompt } from "./buildPrompt.ts";
 
 export async function ragAnswer(question: string, repo: VectorRepository) {
 

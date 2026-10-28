@@ -1,4 +1,4 @@
-import { ContextWindow } from "../contextWindow.ts";
+import { ContextWindow } from "./contextWindow.ts";
 
 export function EstimateTokens(contextWindow: ContextWindow): number {
     const averageTokenLength = 3;   

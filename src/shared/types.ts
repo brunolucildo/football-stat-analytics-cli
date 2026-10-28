@@ -7,8 +7,3 @@ export type ValidationResult = {
     isValid: boolean;
     errors: string[];
 };
-
-export type RagExample = {
-    q: string;
-    a: string;
-}

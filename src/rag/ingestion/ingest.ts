@@ -1,6 +1,6 @@
-import { VectorRepository } from "../vectorRepository.ts";
-import { embed } from "../ai/embed.ts";
-import { translateReportToPortuguese } from "../ai/translateReport.ts";
+import { VectorRepository } from "../retrieval/vectorRepository.ts";
+import { embed } from "../../ai/embeddings/embed.ts";
+import { translateReportToPortuguese } from "../../ai/reports/translateReport.ts";
 import { chunkText } from "./chunkText.ts";
 
 export async function ingest(source: string, text: string, repo: VectorRepository) {

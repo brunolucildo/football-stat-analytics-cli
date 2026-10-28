@@ -1,4 +1,4 @@
-import type { Message } from "./utils/types.ts"
+import type { Message } from "../shared/types.ts"
 
 export class ContextWindow {
     private history: Message[] = [];

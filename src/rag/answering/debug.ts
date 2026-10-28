@@ -1,5 +1,5 @@
-import { embed } from "../ai/embed.ts";
-import { VectorRepository } from "../vectorRepository.ts";
+import { embed } from "../../ai/embeddings/embed.ts";
+import { VectorRepository } from "../retrieval/vectorRepository.ts";
 
 const MAX_CHUNKS = 150
 

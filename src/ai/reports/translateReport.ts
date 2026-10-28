@@ -1,5 +1,5 @@
-import { openai } from "../clients/openai.ts";
-import { withRetry } from "../utils/withRetry.ts";
+import { openai } from "../../clients/openai.ts";
+import { withRetry } from "../../shared/withRetry.ts";
 
 export async function translateReportToPortuguese(text: string): Promise<string> {
     const response = await withRetry(() => openai.chat.completions.create({
