@@ -1,0 +1,169 @@
+{
+  "date": "2026-11-05T19:12:53.200Z",
+  "model": "gpt-4o-mini",
+  "runsPerCaseAndMode": 8,
+  "rows": [
+    {
+      "caso": "atleta-dados-completos",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 2,
+      "parcela_do_vetor_mais_comum": "88%",
+      "dispersao_maxima": 10
+    },
+    {
+      "caso": "atleta-dados-completos",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-completos",
+      "modo": "consenso (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 3,
+      "parcela_do_vetor_mais_comum": "63%",
+      "dispersao_maxima": 2
+    },
+    {
+      "caso": "atleta-dados-parciais",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-parciais",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-parciais",
+      "modo": "consenso (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-instrucao-embutida",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-instrucao-embutida",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-instrucao-embutida",
+      "modo": "consenso (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-zagueiro-sem-ataque",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 2,
+      "parcela_do_vetor_mais_comum": "63%",
+      "dispersao_maxima": 1
+    },
+    {
+      "caso": "novo-zagueiro-sem-ataque",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 2,
+      "parcela_do_vetor_mais_comum": "75%",
+      "dispersao_maxima": 1
+    },
+    {
+      "caso": "novo-zagueiro-sem-ataque",
+      "modo": "consenso (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-meia-com-ruido",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-meia-com-ruido",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-meia-com-ruido",
+      "modo": "consenso (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-instrucao-em-ingles",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 3,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-instrucao-em-ingles",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 3,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-instrucao-em-ingles",
+      "modo": "consenso (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    }
+  ]
+}

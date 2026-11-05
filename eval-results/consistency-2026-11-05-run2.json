@@ -1,0 +1,223 @@
+{
+  "date": "2026-11-05T19:23:23.110Z",
+  "model": "gpt-4o-mini",
+  "runsPerCaseAndMode": 8,
+  "rows": [
+    {
+      "caso": "atleta-dados-completos",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 7,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-completos",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-completos",
+      "modo": "consenso T=0.5 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 6,
+      "parcela_do_vetor_mais_comum": "25%",
+      "dispersao_maxima": 8
+    },
+    {
+      "caso": "atleta-dados-completos",
+      "modo": "consenso T=0.2 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 4,
+      "parcela_do_vetor_mais_comum": "50%",
+      "dispersao_maxima": 8
+    },
+    {
+      "caso": "atleta-dados-parciais",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-parciais",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-parciais",
+      "modo": "consenso T=0.5 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-dados-parciais",
+      "modo": "consenso T=0.2 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-instrucao-embutida",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-instrucao-embutida",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-instrucao-embutida",
+      "modo": "consenso T=0.5 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "atleta-instrucao-embutida",
+      "modo": "consenso T=0.2 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-zagueiro-sem-ataque",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-zagueiro-sem-ataque",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 3,
+      "parcela_do_vetor_mais_comum": "75%",
+      "dispersao_maxima": 8
+    },
+    {
+      "caso": "novo-zagueiro-sem-ataque",
+      "modo": "consenso T=0.5 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-zagueiro-sem-ataque",
+      "modo": "consenso T=0.2 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 3,
+      "parcela_do_vetor_mais_comum": "75%",
+      "dispersao_maxima": 6
+    },
+    {
+      "caso": "novo-meia-com-ruido",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-meia-com-ruido",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-meia-com-ruido",
+      "modo": "consenso T=0.5 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-meia-com-ruido",
+      "modo": "consenso T=0.2 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-instrucao-em-ingles",
+      "modo": "temperature 0, sem seed",
+      "execucoes": 8,
+      "validas": 4,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-instrucao-em-ingles",
+      "modo": "temperature 0, com seed",
+      "execucoes": 8,
+      "validas": 5,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-instrucao-em-ingles",
+      "modo": "consenso T=0.5 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 8,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    },
+    {
+      "caso": "novo-instrucao-em-ingles",
+      "modo": "consenso T=0.2 (mediana de 3)",
+      "execucoes": 8,
+      "validas": 6,
+      "vetores_distintos": 1,
+      "parcela_do_vetor_mais_comum": "100%",
+      "dispersao_maxima": 0
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-05T18:59:54.501Z",
+  "model": "gpt-4o-mini",
+  "items": 30,
+  "repetitions": 3,
+  "pooled": {
+    "total": 90,
+    "unavailable": 0,
+    "truePositives": 41,
+    "falseNegatives": 4,
+    "trueNegatives": 42,
+    "falsePositives": 3,
+    "rejectionRecall": 0.9111111111111111,
+    "falseRejectionRate": 0.06666666666666667,
+    "accuracy": 0.9222222222222223,
+    "misclassified": [
+      "a14",
+      "r3",
+      "a14",
+      "r3",
+      "r4",
+      "a14",
+      "r3"
+    ]
+  },
+  "perRepetition": [
+    {
+      "repetition": 1,
+      "total": 30,
+      "unavailable": 0,
+      "truePositives": 14,
+      "falseNegatives": 1,
+      "trueNegatives": 14,
+      "falsePositives": 1,
+      "rejectionRecall": 0.9333333333333333,
+      "falseRejectionRate": 0.06666666666666667,
+      "accuracy": 0.9333333333333333,
+      "misclassified": [
+        "a14",
+        "r3"
+      ]
+    },
+    {
+      "repetition": 2,
+      "total": 30,
+      "unavailable": 0,
+      "truePositives": 13,
+      "falseNegatives": 2,
+      "trueNegatives": 14,
+      "falsePositives": 1,
+      "rejectionRecall": 0.8666666666666667,
+      "falseRejectionRate": 0.06666666666666667,
+      "accuracy": 0.9,
+      "misclassified": [
+        "a14",
+        "r3",
+        "r4"
+      ]
+    },
+    {
+      "repetition": 3,
+      "total": 30,
+      "unavailable": 0,
+      "truePositives": 14,
+      "falseNegatives": 1,
+      "trueNegatives": 14,
+      "falsePositives": 1,
+      "rejectionRecall": 0.9333333333333333,
+      "falseRejectionRate": 0.06666666666666667,
+      "accuracy": 0.9333333333333333,
+      "misclassified": [
+        "a14",
+        "r3"
+      ]
+    }
+  ]
+}

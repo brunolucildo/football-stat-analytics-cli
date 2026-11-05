@@ -13,6 +13,7 @@ import { isPersonaName, type PersonaName } from "./ai/personas.ts";
 import { buildSystemPrompt } from "./ai/prompts.ts";
 import { validateWithRepair } from "./ai/repairResponse.ts";
 import { regenerateWithFeedback } from "./ai/regenerate.ts";
+import { configuredSamples, generateConsensus } from "./ai/consensusGenerate.ts";
 
 const promptArgument = process.argv[2];
 const systemPrompt = promptArgument && isPersonaName(promptArgument)
@@ -67,13 +68,32 @@ while(true){
 
     process.stdout.write("Analista: Estou analisando, aguarde...\n\n")
 
-    const streamedResponse = await streamResponse(stitched, systemPrompt, temperature);
-
     const userEvidence = contextWindow
         .getMessages()
         .filter(message => message.role === "user")
         .map(message => message.content)
         .join("\n");
+
+    let streamedResponse: string;
+    const samples = persona === "analistaEsportivo" ? configuredSamples() : 1;
+    if (samples > 1) {
+        // Several answers are generated and the median score of each attribute is kept,
+        // which makes the scores more stable between runs. The result is shown at the end.
+        const consensus = await generateConsensus(
+            systemPrompt ?? buildSystemPrompt("analistaEsportivo"),
+            stitched,
+            userEvidence,
+            samples
+        );
+        streamedResponse = consensus.response;
+        console.log(streamedResponse);
+        console.log(
+            `\n(consenso entre ${consensus.validSamples} de ${consensus.totalSamples} respostas válidas; ` +
+            `maior dispersão de score: ${Math.max(0, ...Object.values(consensus.spread))})`
+        );
+    } else {
+        streamedResponse = await streamResponse(stitched, systemPrompt, temperature);
+    }
 
     const outcome = await validateWithRepair({
         response: streamedResponse,

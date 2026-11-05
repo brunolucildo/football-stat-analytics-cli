@@ -5,7 +5,9 @@
     "env:setup": "copy .env.example .env.local",
     "test": "node --experimental-strip-types --test tests/*.test.js",
     "typecheck": "tsc --noEmit",
-    "eval": "node --experimental-strip-types --env-file=.env.local src/eval/liveEval.ts"
+    "eval": "node --experimental-strip-types --env-file=.env.local src/eval/liveEval.ts",
+    "eval:consistency": "node --experimental-strip-types --env-file=.env.local src/eval/consistencyExperiment.ts",
+    "eval:judge": "node --experimental-strip-types --env-file=.env.local src/eval/judgeCalibration.ts"
   },
   "type": "module",
   "dependencies": {

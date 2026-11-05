@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { blockedWords, hallucinationSignals } from "../ai/blockedWords.ts";
 import { compareAthleteRuns } from "../ai/consistency.ts";
+import { generateConsensus } from "../ai/consensusGenerate.ts";
 import { validateComplete } from "../ai/fullValidation.ts";
 import { generateOnce } from "../ai/generate.ts";
 import { openAiJudge } from "../ai/openaiJudge.ts";
@@ -15,8 +16,9 @@ import { EVAL_CASES, RAG_EVAL_CASES } from "./cases.ts";
 
 /**
  * Live evaluation: runs the real model against the evaluation cases and reports
- * how often the answers pass the validation pipeline. It calls the OpenAI API
- * (about 3 requests per run), so it is never part of `npm test`.
+ * how often the answers pass the validation pipeline. Athlete cases run in two modes:
+ * "single" (one answer, temperature 0) and "consensus" (the median of several answers,
+ * as the chatbot does). It calls the OpenAI API, so it is never part of `npm test`.
  */
 const runs = Number(process.env.EVAL_RUNS ?? 3);
 
@@ -38,6 +40,8 @@ for (const evalCase of EVAL_CASES) {
     if (evalCase.expectBlocked) {
         caseSummaries.push({
             id: evalCase.id,
+            mode: "-",
+            heldOut: Boolean(evalCase.heldOut),
             persona: evalCase.persona,
             runs: 0,
             passed: !inputResult.isValid,
@@ -48,50 +52,58 @@ for (const evalCase of EVAL_CASES) {
 
     const system = buildSystemPrompt(evalCase.persona);
     const history = [{ role: "user" as const, content: evalCase.input }];
-    const results: RunResult[] = [];
+    const modes = evalCase.persona === "analistaEsportivo" ? ["single", "consensus"] as const : ["single"] as const;
 
-    for (let run = 0; run < runs; run++) {
-        const first = await generateOnce(system, history);
-        let firstAttempt: { valid: boolean; errors: string[] } | undefined;
+    for (const mode of modes) {
+        const results: RunResult[] = [];
 
-        const outcome = await validateWithRepair({
-            response: first,
-            validate: async response => {
-                const validation = await validateComplete(response, {
-                    persona: evalCase.persona,
-                    userEvidence: evalCase.input,
-                    hallucinationSignals,
-                    judge: openAiJudge
-                });
-                firstAttempt ??= { valid: validation.isValid, errors: validation.errors };
-                return validation;
-            },
-            regenerate: (previous, errors) => regenerateWithFeedback(system, history, previous, errors)
-        });
+        for (let run = 0; run < runs; run++) {
+            const first = mode === "consensus"
+                ? (await generateConsensus(system, history, evalCase.input, 3)).response
+                : await generateOnce(system, history);
+            let firstAttempt: { valid: boolean; errors: string[] } | undefined;
 
-        const answer = parseStrictJsonObject(outcome.response).value;
-        results.push({
-            firstAttemptValid: firstAttempt?.valid ?? false,
-            firstAttemptErrors: firstAttempt?.errors ?? [],
-            repairs: outcome.repairs,
-            finalValid: outcome.validation.isValid,
-            finalErrors: outcome.validation.errors,
-            checkError: outcome.validation.isValid && answer && evalCase.check ? evalCase.check(answer) : null,
-            response: outcome.response
+            const outcome = await validateWithRepair({
+                response: first,
+                validate: async response => {
+                    const validation = await validateComplete(response, {
+                        persona: evalCase.persona,
+                        userEvidence: evalCase.input,
+                        hallucinationSignals,
+                        judge: openAiJudge
+                    });
+                    firstAttempt ??= { valid: validation.isValid, errors: validation.errors };
+                    return validation;
+                },
+                regenerate: (previous, errors) => regenerateWithFeedback(system, history, previous, errors)
+            });
+
+            const answer = parseStrictJsonObject(outcome.response).value;
+            results.push({
+                firstAttemptValid: firstAttempt?.valid ?? false,
+                firstAttemptErrors: firstAttempt?.errors ?? [],
+                repairs: outcome.repairs,
+                finalValid: outcome.validation.isValid,
+                finalErrors: outcome.validation.errors,
+                checkError: outcome.validation.isValid && answer && evalCase.check ? evalCase.check(answer) : null,
+                response: outcome.response
+            });
+        }
+
+        const finalResponses = results.filter(result => result.finalValid).map(result => result.response);
+        caseSummaries.push({
+            id: evalCase.id,
+            mode,
+            heldOut: Boolean(evalCase.heldOut),
+            persona: evalCase.persona,
+            runs,
+            firstAttemptValid: results.filter(result => result.firstAttemptValid).length,
+            validAfterRepair: results.filter(result => result.finalValid).length,
+            postConditionFailures: results.filter(result => result.checkError).length,
+            consistency: evalCase.persona === "analistaEsportivo" ? compareAthleteRuns(finalResponses, evalCase.input) : undefined,
+            results
         });
     }
-
-    const finalResponses = results.filter(result => result.finalValid).map(result => result.response);
-    caseSummaries.push({
-        id: evalCase.id,
-        persona: evalCase.persona,
-        runs,
-        firstAttemptValid: results.filter(result => result.firstAttemptValid).length,
-        validAfterRepair: results.filter(result => result.finalValid).length,
-        postConditionFailures: results.filter(result => result.checkError).length,
-        consistency: evalCase.persona === "analistaEsportivo" ? compareAthleteRuns(finalResponses, evalCase.input) : undefined,
-        results
-    });
 }
 
 const ragSummaries = [];
@@ -103,6 +115,7 @@ try {
         const refused = /Não encontrei informações suficientes/.test(answer);
         ragSummaries.push({
             id: ragCase.id,
+            heldOut: Boolean(ragCase.heldOut),
             question: ragCase.question,
             expectRefusal: ragCase.expectRefusal,
             refused,
@@ -121,9 +134,11 @@ mkdirSync("eval-results", { recursive: true });
 const file = `eval-results/live-eval-${report.date.slice(0, 19).replace(/[:T]/g, "-")}.json`;
 writeFileSync(file, JSON.stringify(report, null, 2));
 
-console.log(`\nAvaliação ao vivo (${runs} execuções por caso) — detalhes em ${file}\n`);
-console.table(caseSummaries.map(({ id, runs: n, firstAttemptValid, validAfterRepair, postConditionFailures, passed, consistency }: any) => ({
+console.log(`\nAvaliação ao vivo (${runs} execuções por caso e modo) — detalhes em ${file}\n`);
+console.table(caseSummaries.map(({ id, mode, heldOut, runs: n, firstAttemptValid, validAfterRepair, postConditionFailures, passed, consistency }: any) => ({
     caso: id,
+    modo: mode,
+    novo: heldOut ? "sim" : "",
     execucoes: n,
     validas_1a_tentativa: firstAttemptValid ?? "-",
     validas_apos_reparo: validAfterRepair ?? "-",
@@ -132,4 +147,4 @@ console.table(caseSummaries.map(({ id, runs: n, firstAttemptValid, validAfterRep
     scores_identicos: consistency ? consistency.identicalScores : "-",
     dispersao_maxima: consistency ? consistency.maxSpread : "-"
 })));
-console.table(ragSummaries.map(({ id, expectRefusal, refused, passed }) => ({ caso: id, esperava_recusa: expectRefusal, recusou: refused, ok: passed })));
+console.table(ragSummaries.map(({ id, heldOut, expectRefusal, refused, passed }) => ({ caso: id, novo: heldOut ? "sim" : "", esperava_recusa: expectRefusal, recusou: refused, ok: passed })));
