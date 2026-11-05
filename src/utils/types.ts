@@ -6,6 +6,8 @@ export type Message = {
 export type ValidationResult = {
     isValid: boolean;
     errors: string[];
+    /** Non-blocking observations that deserve human review. */
+    warnings?: string[];
 };
 
 export type RagExample = {

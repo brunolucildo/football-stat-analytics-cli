@@ -1,10 +1,12 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { VectorRepository } from "./vectorRepository.ts";
+import { extractPdfText } from "./utils/extractPdfText.ts";
 import { ingest } from "./utils/ingest.ts";
-import { PDFParse } from "pdf-parse";
 
-const vectorRepository = new VectorRepository();
+const vectorRepository = new VectorRepository(
+  process.env.VECTOR_DB_PATH ?? "vector_db.db"
+);
 
 const reportsDirectory = "relatorios";
 const sources = (await readdir(reportsDirectory, { withFileTypes: true }))
@@ -16,23 +18,7 @@ if (sources.length === 0) {
   throw new Error(`Nenhum arquivo PDF encontrado em ${reportsDirectory}`);
 }
 
-async function extractPdfText(source: string): Promise<string> {
-  const parser = new PDFParse({ data: await readFile(source) });
-
-  try {
-    const { text } = await parser.getText();
-
-    if (!text.trim()) {
-      throw new Error(`Não foi possível extrair texto de ${source}`);
-    }
-
-    return text;
-  } finally {
-    await parser.destroy();
-  }
-}
-
 for (const source of sources) {
-  const text = await extractPdfText(source);
+  const text = await extractPdfText(source, await readFile(source));
   await ingest(source, text, vectorRepository);
 }

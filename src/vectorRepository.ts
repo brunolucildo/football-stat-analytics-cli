@@ -3,6 +3,12 @@ import { cosineSimilarity } from "./utils/cosineSimilarity.ts";
 import { hybridScore } from "./utils/hybridScore.ts";
 import { keywordScore } from "./utils/keywordScore.ts";
 
+export type RetrievedChunk = {
+    source: string;
+    chunk: string;
+    score: number;
+};
+
 export class VectorRepository {
     private db: DatabaseSync;
 
@@ -26,14 +32,15 @@ export class VectorRepository {
         `).run(source, chunk, JSON.stringify(embeddings));
     };
 
-    search(input: string, inputEmbeddings: number[], topK = 5, minScore = 0.39){
+    search(input: string, inputEmbeddings: number[], topK = 5, minScore = 0.30): RetrievedChunk[] {
         const documents = this.db.prepare(`
             SELECT source, chunk, embeddings
             FROM documents
-        `).all() as { chunk: string, embeddings: string }[];
+        `).all() as { source: string, chunk: string, embeddings: string }[];
 
         return documents
             .map(document => ({
+                source: document.source,
                 chunk: document.chunk,
                 score: hybridScore(
                     cosineSimilarity(inputEmbeddings, JSON.parse(document.embeddings)),
@@ -44,5 +51,9 @@ export class VectorRepository {
             .filter(document => document.score >= minScore)
             .sort((d1, d2) => d2.score - d1.score)
             .slice(0, topK);
+    }
+
+    close(): void {
+        this.db.close();
     }
 }

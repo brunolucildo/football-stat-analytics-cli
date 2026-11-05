@@ -9,7 +9,7 @@ export async function ragDebug(question: string, repo:VectorRepository) {
 
     console.log("\n---------- Chunks Recuperados ----------")
     result.forEach((r, i) => {
-        console.log(`\n[${i + 1}] Score: ${r.score.toFixed(2)}`)
+        console.log(`\n[${i + 1}] Fonte: ${r.source} | Score de relevância: ${r.score.toFixed(2)}`)
         console.log(`${r.chunk.slice(0,MAX_CHUNKS)}${r.chunk.length > MAX_CHUNKS ? "..." : ""}`)
     })
 }

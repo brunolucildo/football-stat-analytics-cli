@@ -7,14 +7,24 @@ import { maybeCompress } from "./ai/maybeCompress.ts";
 import { stitchContext } from "./utils/stitchContext.ts";
 import { validateInput } from "./ai/validateInput.ts";
 import { blockedWords, hallucinationSignals } from "./ai/blockedWords.ts";
-import { validateOutput } from "./ai/validateOutputs.ts";
-import { isPersonaName } from "./ai/personas.ts";
+import { validateComplete } from "./ai/fullValidation.ts";
+import { openAiJudge, semanticVerificationEnabled } from "./ai/openaiJudge.ts";
+import { isPersonaName, type PersonaName } from "./ai/personas.ts";
 import { buildSystemPrompt } from "./ai/prompts.ts";
+import { validateWithRepair } from "./ai/repairResponse.ts";
+import { regenerateWithFeedback } from "./ai/regenerate.ts";
 
 const promptArgument = process.argv[2];
 const systemPrompt = promptArgument && isPersonaName(promptArgument)
     ? buildSystemPrompt(promptArgument)
     : promptArgument;
+// Without an argument streamResponse falls back to the sports analyst persona; a custom
+// system prompt has no output contract, so only the textual signals are checked for it.
+const persona: PersonaName | undefined = !promptArgument
+    ? "analistaEsportivo"
+    : isPersonaName(promptArgument) ? promptArgument : undefined;
+// Structured (JSON) personas run deterministically to keep scores stable between runs.
+const temperature = persona === "analistaEsportivo" || persona === "analistaProposta" ? 0 : undefined;
 const windowId = process.argv[3] || crypto.randomUUID();
 
 const rl = readLine.createInterface({
@@ -57,17 +67,43 @@ while(true){
 
     process.stdout.write("Analista: Estou analisando, aguarde...\n\n")
 
-    const fullResponse = await streamResponse(stitched, systemPrompt);
-    
-    const outputResult = validateOutput(fullResponse, hallucinationSignals);
-    if (!outputResult.isValid) {
-        console.log("Saída inválida:", outputResult.errors.join(", "));
+    const streamedResponse = await streamResponse(stitched, systemPrompt, temperature);
+
+    const userEvidence = contextWindow
+        .getMessages()
+        .filter(message => message.role === "user")
+        .map(message => message.content)
+        .join("\n");
+
+    const outcome = await validateWithRepair({
+        response: streamedResponse,
+        validate: response => validateComplete(response, {
+            persona,
+            userEvidence,
+            hallucinationSignals,
+            judge: semanticVerificationEnabled() ? openAiJudge : undefined
+        }),
+        regenerate: (previousResponse, errors) => {
+            console.log("\n\nResposta rejeitada pela validação; solicitando correção:", errors.join(" | "));
+            return regenerateWithFeedback(systemPrompt ?? buildSystemPrompt("analistaEsportivo"), stitched, previousResponse, errors);
+        }
+    });
+
+    if (!outcome.validation.isValid) {
+        console.log("\nSaída inválida:", outcome.validation.errors.join(", "));
         continue;
-    } 
+    }
+
+    if (outcome.repairs > 0) {
+        console.log(`\nResposta corrigida:\n${outcome.response}`);
+    }
+    if (outcome.validation.warnings?.length) {
+        console.log("\nAvisos de validação:", outcome.validation.warnings.join(" | "));
+    }
 
     messageRepository.save(
-        windowId, 
-        contextWindow.addAssistantMessage(fullResponse)
+        windowId,
+        contextWindow.addAssistantMessage(outcome.response)
     );
 }
 

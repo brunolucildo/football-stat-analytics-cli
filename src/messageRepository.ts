@@ -4,8 +4,8 @@ import type { Message } from "./utils/types.ts";
 export class MessageRepository {
     private db: DatabaseSync;
 
-    constructor() {
-        this.db = new DatabaseSync("pos_ia-m3.db");
+    constructor(dbPath = "pos_ia-m3.db") {
+        this.db = new DatabaseSync(dbPath);
         this.db.exec(`
             CREATE TABLE IF NOT EXISTS messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,12 +31,16 @@ export class MessageRepository {
             SELECT role, content
             FROM messages
             WHERE context_window = ?
-            ORDER BY created_at ASC
+            ORDER BY created_at ASC, id ASC
         `).all(session);
 
         return rows.map(row => ({
             role: row.role,
             content: row.content
         }) as Message);
+    }
+
+    close(): void {
+        this.db.close();
     }
 }

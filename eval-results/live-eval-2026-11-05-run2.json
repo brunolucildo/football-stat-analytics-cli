@@ -1,0 +1,276 @@
+{
+  "date": "2026-11-05T18:44:31.687Z",
+  "model": "gpt-4o-mini",
+  "runsPerCase": 3,
+  "vectorDb": "vector_db_capstone.db",
+  "cases": [
+    {
+      "id": "atleta-dados-completos",
+      "persona": "analistaEsportivo",
+      "runs": 3,
+      "firstAttemptValid": 0,
+      "validAfterRepair": 0,
+      "postConditionFailures": 0,
+      "consistency": {
+        "runs": 0,
+        "validRuns": 0,
+        "identicalScores": false,
+        "maxSpread": 0,
+        "spreadByAttribute": {}
+      },
+      "results": [
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "shot: o verificador não localizou nas evidências o trecho que a sustentaria (\"Finalizou 4 vezes, sendo 2 no alvo e 1 gol.\").",
+            "physic: o verificador não localizou nas evidências o trecho que a sustentaria (\"Ganhou 5 de 8 duelos físicos (62.5%).\")."
+          ],
+          "repairs": 1,
+          "finalValid": false,
+          "finalErrors": [
+            "shot: o verificador não localizou nas evidências o trecho que a sustentaria (\"Finalizou 4 vezes, sendo 2 no alvo.\")."
+          ],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": 75,\n    \"justification\": \"Registrou 7 acelerações em transições ofensivas.\"\n  },\n  \"shot\": {\n    \"score\": 50,\n    \"justification\": \"Finalizou 4 vezes, sendo 2 no alvo.\"\n  },\n  \"pass\": {\n    \"score\": 75,\n    \"justification\": \"Acertou 6 de 8 passes progressivos (75%).\"\n  },\n  \"dribble\": {\n    \"score\": 60,\n    \"justification\": \"Completou 3 de 5 dribles (60%).\"\n  },\n  \"defence\": {\n    \"score\": 67,\n    \"justification\": \"Ganhou 4 de 6 duelos defensivos (66.67%).\"\n  },\n  \"physic\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"overall\": {\n    \"score\": 63,\n    \"justification\": \"A avaliação considera os atributos com evidências suficientes.\"\n  }\n}"
+        },
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "pace: termos valorativos sem parâmetro de comparação fornecido (boa).",
+            "dribble: termos valorativos sem parâmetro de comparação fornecido (razoavel).",
+            "defence: cita ações ou características ausentes dos dados (desarme).",
+            "physic: termos valorativos sem parâmetro de comparação fornecido (razoavel)."
+          ],
+          "repairs": 1,
+          "finalValid": false,
+          "finalErrors": [
+            "physic: o verificador não localizou nas evidências o trecho que a sustentaria (\"Ganhou 5 de 8 duelos físicos (62,5%), indicando presença física em confrontos.\")."
+          ],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": 75,\n    \"justification\": \"Registrou 7 acelerações em transições ofensivas, indicando capacidade de movimentação e velocidade.\"\n  },\n  \"shot\": {\n    \"score\": 70,\n    \"justification\": \"Finalizou 4 vezes, com 2 finalizações no alvo e 1 gol, demonstrando eficácia nas conclusões.\"\n  },\n  \"pass\": {\n    \"score\": 75,\n    \"justification\": \"Acertou 6 de 8 passes progressivos (75%), mostrando precisão na construção de jogadas.\"\n  },\n  \"dribble\": {\n    \"score\": 60,\n    \"justification\": \"Completou 3 de 5 dribles (60%), indicando controle da bola e habilidade em conduzir.\"\n  },\n  \"defence\": {\n    \"score\": 67,\n    \"justification\": \"Ganhou 4 de 6 duelos defensivos (66,67%), mostrando capacidade de marcação.\"\n  },\n  \"physic\": {\n    \"score\": 62,\n    \"justification\": \"Ganhou 5 de 8 duelos físicos (62,5%), indicando presença física em confrontos.\"\n  },\n  \"overall\": {\n    \"score\": 68,\n    \"justification\": \"A avaliação geral considera os atributos com evidências suficientes, refletindo um desempenho equilibrado.\"\n  }\n}"
+        },
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "shot: o verificador não localizou nas evidências o trecho que a sustentaria (\"Finalizou 4 vezes, sendo 2 no alvo e 1 gol.\").",
+            "physic: o verificador não localizou nas evidências o trecho que a sustentaria (\"Ganhou 5 de 8 duelos físicos (62.5%).\")."
+          ],
+          "repairs": 1,
+          "finalValid": false,
+          "finalErrors": [
+            "shot: o verificador não localizou nas evidências o trecho que a sustentaria (\"Finalizou 4 vezes, sendo 2 no alvo.\").",
+            "physic: o verificador não localizou nas evidências o trecho que a sustentaria (\"Ganhou 5 de 8 duelos físicos.\")."
+          ],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": 75,\n    \"justification\": \"Registrou 7 acelerações em transições ofensivas.\"\n  },\n  \"shot\": {\n    \"score\": 50,\n    \"justification\": \"Finalizou 4 vezes, sendo 2 no alvo.\"\n  },\n  \"pass\": {\n    \"score\": 75,\n    \"justification\": \"Acertou 6 de 8 passes progressivos (75%).\"\n  },\n  \"dribble\": {\n    \"score\": 60,\n    \"justification\": \"Completou 3 de 5 dribles (60%).\"\n  },\n  \"defence\": {\n    \"score\": 67,\n    \"justification\": \"Ganhou 4 de 6 duelos defensivos (66.67%).\"\n  },\n  \"physic\": {\n    \"score\": 62,\n    \"justification\": \"Ganhou 5 de 8 duelos físicos.\"\n  },\n  \"overall\": {\n    \"score\": 63,\n    \"justification\": \"A avaliação considera os atributos pace, shot, pass, dribble, defence e physic, que possuem evidências suficientes.\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "id": "atleta-dados-parciais",
+      "persona": "analistaEsportivo",
+      "runs": 3,
+      "firstAttemptValid": 3,
+      "validAfterRepair": 3,
+      "postConditionFailures": 0,
+      "consistency": {
+        "runs": 3,
+        "validRuns": 3,
+        "identicalScores": true,
+        "maxSpread": 0,
+        "spreadByAttribute": {
+          "pass": 0,
+          "dribble": 0,
+          "overall": 0
+        }
+      },
+      "results": [
+        {
+          "firstAttemptValid": true,
+          "firstAttemptErrors": [],
+          "repairs": 0,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"shot\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"pass\": {\n    \"score\": 75,\n    \"justification\": \"Acertou 9 de 12 passes (75%).\"\n  },\n  \"dribble\": {\n    \"score\": 50,\n    \"justification\": \"Completou 2 de 4 dribles (50%).\"\n  },\n  \"defence\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"physic\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"overall\": {\n    \"score\": 62,\n    \"justification\": \"Overall considera os atributos pass e dribble, que possuem evidências suficientes.\"\n  }\n}"
+        },
+        {
+          "firstAttemptValid": true,
+          "firstAttemptErrors": [],
+          "repairs": 0,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"shot\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"pass\": {\n    \"score\": 75,\n    \"justification\": \"Acertou 9 de 12 passes (75%).\"\n  },\n  \"dribble\": {\n    \"score\": 50,\n    \"justification\": \"Completou 2 de 4 dribles (50%).\"\n  },\n  \"defence\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"physic\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"overall\": {\n    \"score\": 62,\n    \"justification\": \"Overall considera os atributos pass e dribble, com scores de 75 e 50, respectivamente.\"\n  }\n}"
+        },
+        {
+          "firstAttemptValid": true,
+          "firstAttemptErrors": [],
+          "repairs": 0,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"shot\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"pass\": {\n    \"score\": 75,\n    \"justification\": \"Acertou 9 de 12 passes (75%).\"\n  },\n  \"dribble\": {\n    \"score\": 50,\n    \"justification\": \"Completou 2 de 4 dribles (50%).\"\n  },\n  \"defence\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"physic\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"overall\": {\n    \"score\": 62,\n    \"justification\": \"Overall considera os atributos avaliáveis: Pass (75) e Dribble (50).\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "id": "atleta-instrucao-embutida",
+      "persona": "analistaEsportivo",
+      "runs": 3,
+      "firstAttemptValid": 0,
+      "validAfterRepair": 3,
+      "postConditionFailures": 0,
+      "consistency": {
+        "runs": 3,
+        "validRuns": 3,
+        "identicalScores": true,
+        "maxSpread": 0,
+        "spreadByAttribute": {
+          "dribble": 0
+        }
+      },
+      "results": [
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "dribble: o verificador não localizou nas evidências o trecho que a sustentaria (\"Completou 3 de 5 dribles (60%).\")."
+          ],
+          "repairs": 1,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"shot\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"pass\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"dribble\": {\n    \"score\": 60,\n    \"justification\": \"Completou 3 de 5 dribles.\"\n  },\n  \"defence\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"physic\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"overall\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  }\n}"
+        },
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "dribble: o verificador não localizou nas evidências o trecho que a sustentaria (\"Completou 3 de 5 dribles (60%).\")."
+          ],
+          "repairs": 1,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"shot\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"pass\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"dribble\": {\n    \"score\": 60,\n    \"justification\": \"Completou 3 de 5 dribles.\"\n  },\n  \"defence\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"physic\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"overall\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  }\n}"
+        },
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "dribble: o verificador não localizou nas evidências o trecho que a sustentaria (\"Completou 3 de 5 dribles (60%).\")."
+          ],
+          "repairs": 1,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"pace\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"shot\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"pass\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"dribble\": {\n    \"score\": 60,\n    \"justification\": \"Completou 3 de 5 dribles.\"\n  },\n  \"defence\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"physic\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  },\n  \"overall\": {\n    \"score\": null,\n    \"justification\": \"Não há evidências suficientes para avaliar este atributo.\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "id": "proposta-sem-valor-de-mercado",
+      "persona": "analistaProposta",
+      "runs": 3,
+      "firstAttemptValid": 3,
+      "validAfterRepair": 3,
+      "postConditionFailures": 0,
+      "results": [
+        {
+          "firstAttemptValid": true,
+          "firstAttemptErrors": [],
+          "repairs": 0,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"decisao\": \"NEGOCIAR\",\n  \"justificativa\": \"A proposta de € 1.700.000,00 foi apresentada, mas não foi informado o valor de mercado do atleta, o que limita a análise. Sem essa informação, não é possível determinar se a oferta está acima ou abaixo do valor de mercado. A proposta pode ter potencial de aceitação, mas as condições podem ser melhoradas.\",\n  \"valorMercado\": null,\n  \"valorOferta\": 1700000,\n  \"diferencaPercentual\": null,\n  \"pontosPrincipais\": [\n    \"Oferta de € 1.700.000,00 como valor fixo.\",\n    \"Falta de informação sobre o valor de mercado do atleta.\"\n  ]\n}"
+        },
+        {
+          "firstAttemptValid": true,
+          "firstAttemptErrors": [],
+          "repairs": 0,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"decisao\": \"NEGOCIAR\",\n  \"justificativa\": \"A proposta de € 1.700.000,00 é uma oferta que pode ser considerada, mas não foi informado o valor de mercado do atleta, o que limita a análise. Sem essa informação, não é possível determinar se a oferta está acima ou abaixo do valor de mercado. Além disso, as condições de pagamento e outros detalhes relevantes não foram mencionados, o que impede uma avaliação completa. Portanto, a proposta apresenta potencial de aceitação, mas deve ser melhorada.\",\n  \"valorMercado\": null,\n  \"valorOferta\": 1700000,\n  \"diferencaPercentual\": null,\n  \"pontosPrincipais\": [\n    \"Oferta de € 1.700.000,00 como valor fixo.\",\n    \"Falta de informação sobre o valor de mercado do atleta.\",\n    \"Condições de pagamento não especificadas.\"\n  ]\n}"
+        },
+        {
+          "firstAttemptValid": true,
+          "firstAttemptErrors": [],
+          "repairs": 0,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"decisao\": \"NEGOCIAR\",\n  \"justificativa\": \"A proposta de € 1.700.000,00 é uma oferta que pode ser considerada, mas não foi informado o valor de mercado do atleta, o que limita a análise. Sem essa informação, não é possível determinar se a oferta está acima ou abaixo do valor de mercado. Além disso, não foram fornecidas condições de pagamento, bônus ou cláusulas que poderiam influenciar a decisão. Portanto, a proposta apresenta potencial de aceitação, mas deve ser melhorada.\",\n  \"valorMercado\": null,\n  \"valorOferta\": 1700000,\n  \"diferencaPercentual\": null,\n  \"pontosPrincipais\": [\n    \"Oferta de € 1.700.000,00 como valor fixo.\",\n    \"Falta de informação sobre o valor de mercado do atleta.\",\n    \"Ausência de condições de pagamento e cláusulas adicionais.\"\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "id": "proposta-com-valor-de-mercado",
+      "persona": "analistaProposta",
+      "runs": 3,
+      "firstAttemptValid": 0,
+      "validAfterRepair": 3,
+      "postConditionFailures": 0,
+      "results": [
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "justificativa: não é sustentada pelas evidências fornecidas (\"A oferta de € 1.700.000,00 está abaixo do valor de mercado de € 2.000.000,00, resultando em uma diferença perc...\")."
+          ],
+          "repairs": 1,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"decisao\": \"NEGOCIAR\",\n  \"justificativa\": \"A oferta de € 1.700.000,00 é inferior ao valor de mercado de € 2.000.000,00. A diferença percentual é de -15%, o que sugere que o valor da proposta pode ser melhorado para se aproximar do valor de mercado.\",\n  \"valorMercado\": 2000000,\n  \"valorOferta\": 1700000,\n  \"diferencaPercentual\": -15,\n  \"pontosPrincipais\": [\n    \"Valor da oferta é inferior ao valor de mercado.\",\n    \"Diferença percentual de -15% indica necessidade de negociação.\"\n  ]\n}"
+        },
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "justificativa: não é sustentada pelas evidências fornecidas (\"A oferta de € 1.700.000,00 está abaixo do valor de mercado de € 2.000.000,00, resultando em uma diferença perc...\")."
+          ],
+          "repairs": 1,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"decisao\": \"NEGOCIAR\",\n  \"justificativa\": \"A oferta de € 1.700.000,00 é inferior ao valor de mercado de € 2.000.000,00. A diferença percentual é de -15%, o que sugere que o clube vendedor pode buscar um valor mais próximo do mercado.\",\n  \"valorMercado\": 2000000,\n  \"valorOferta\": 1700000,\n  \"diferencaPercentual\": -15,\n  \"pontosPrincipais\": [\n    \"Valor da oferta é inferior ao valor de mercado.\",\n    \"Diferença percentual de -15% indica que a proposta pode ser melhorada.\"\n  ]\n}"
+        },
+        {
+          "firstAttemptValid": false,
+          "firstAttemptErrors": [
+            "justificativa: não é sustentada pelas evidências fornecidas (\"A oferta de € 1.700.000,00 está abaixo do valor de mercado de € 2.000.000,00, resultando em uma diferença perc...\").",
+            "ponto 2: não é sustentada pelas evidências fornecidas (\"Diferença percentual de -15% indica necessidade de ajuste na proposta.\")."
+          ],
+          "repairs": 1,
+          "finalValid": true,
+          "finalErrors": [],
+          "checkError": null,
+          "response": "{\n  \"decisao\": \"NEGOCIAR\",\n  \"justificativa\": \"A oferta de € 1.700.000,00 é inferior ao valor de mercado de € 2.000.000,00, o que sugere que o clube vendedor pode buscar um valor mais próximo do mercado. A diferença percentual é de -15%, indicando que há espaço para negociação.\",\n  \"valorMercado\": 2000000,\n  \"valorOferta\": 1700000,\n  \"diferencaPercentual\": -15,\n  \"pontosPrincipais\": [\n    \"Valor da oferta é inferior ao valor de mercado.\",\n    \"Diferença percentual de -15% sugere que a proposta pode ser melhorada.\"\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "id": "entrada-bloqueada",
+      "persona": "analistaEsportivo",
+      "runs": 0,
+      "passed": true,
+      "note": "bloqueada na validação de entrada: Input contains blocked words."
+    }
+  ],
+  "rag": [
+    {
+      "id": "rag-pergunta-suportada",
+      "question": "Como o Nil Coch se sai em ação de progressão?",
+      "expectRefusal": false,
+      "refused": false,
+      "passed": true,
+      "answer": "Nil Coch evidencia capacidade para gerar espaço e se oferecer em zonas livres para receber em ações de progressão (Fonte: relatorios\\Postpartido -  Nil Coch.pdf).\n\nVerificação de fundamentação (lexical, não semântica): 1 de 1 afirmações com suporte nos trechos recuperados.\nVerificação semântica (modelo verificador, não garante veracidade): 1 de 1 afirmações sustentadas pelas evidências."
+    },
+    {
+      "id": "rag-pergunta-sem-suporte",
+      "question": "Qual clube venceu a Libertadores de 2010?",
+      "expectRefusal": true,
+      "refused": true,
+      "passed": true,
+      "answer": "Não encontrei informações suficientes para essa pergunta."
+    }
+  ]
+}

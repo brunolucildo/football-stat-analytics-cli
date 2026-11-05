@@ -1,8 +1,11 @@
+import { openAiJudge, semanticVerificationEnabled } from "./ai/openaiJudge.ts";
 import { ragDebug } from "./utils/ragDebug.ts";
 import { safeRagAnswer } from "./utils/safeRagAnswer.ts";
 import { VectorRepository } from "./vectorRepository.ts";
 
-const vectorRepository = new VectorRepository();
+const vectorRepository = new VectorRepository(
+    process.env.VECTOR_DB_PATH ?? "vector_db.db"
+);
 
 const question = "Como o Nul Coch se sai em ação de progressão?"
 const blockedQuestion = "Qual o preço do Nil Coch?"
@@ -10,4 +13,6 @@ const blockedQuestion = "Qual o preço do Nil Coch?"
 await ragDebug(question, vectorRepository);
 
 console.log(`\n---------- RESPOSTA:`);
-console.log(await safeRagAnswer(question, vectorRepository, ["preço"]));
+console.log(await safeRagAnswer(question, vectorRepository, ["preço"], {
+    semanticJudge: semanticVerificationEnabled() ? openAiJudge : undefined
+}));

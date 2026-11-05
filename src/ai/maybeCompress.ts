@@ -6,7 +6,8 @@ import { summarizeHistory } from "./summarizeHistory.ts";
 const MAX_TOKENS = 4096;
 
 export async function maybeCompress(
-    contextWindow: ContextWindow
+    contextWindow: ContextWindow,
+    summarize = summarizeHistory
 ): Promise<Message[]> {
     const currentTokenCount = EstimateTokens(contextWindow);
     if (currentTokenCount < MAX_TOKENS) {
@@ -17,7 +18,7 @@ export async function maybeCompress(
     const messagesToKeep = contextWindow.getMessages().slice(half);
     const messagesToSummarize = contextWindow.getMessages().slice(0, half);
 
-    const summary = await summarizeHistory(messagesToSummarize);
+    const summary = await summarize(messagesToSummarize);
     
     return [
         { role: "user", content: `Resumo do histórico anterior: ${summary}` },

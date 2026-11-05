@@ -4,12 +4,14 @@ import { buildSystemPrompt } from './prompts.ts'
 
 export async function streamResponse( 
     history: Message[], 
-    system: string = buildSystemPrompt("analistaEsportivo")
+    system: string = buildSystemPrompt("analistaEsportivo"),
+    temperature?: number
 ){
     let fullResponse = "";
 
     const stream = await openai.chat.completions.create({
             model: "gpt-4o-mini",
+            temperature,
             messages: [
                 { role: "system", content: system},
                 ...history,
